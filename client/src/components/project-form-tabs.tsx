@@ -200,7 +200,6 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
-      toast({ title: "Success", description: "IDO metrics updated successfully!" });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -224,7 +223,6 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
-      toast({ title: "Success", description: "Platform content updated successfully!" });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -300,7 +298,6 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
-      toast({ title: "Success", description: "Marketing assets updated successfully!" });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {

@@ -87,12 +87,15 @@ export default function ProjectDashboard() {
       completed += fields.filter(status => status === "confirmed").length;
     }
 
-    // Platform Content (6 fields)
+    // Platform Content (8 fields)
     const content = project.platformContent;
     if (content) {
       const fields = [
         content.taglineStatus,
         content.descriptionStatus,
+        content.twitterUrlStatus,
+        content.telegramUrlStatus,
+        content.discordUrlStatus,
         content.roadmapUrlStatus,
         content.teamPageUrlStatus,
         content.tokenomicsUrlStatus,
