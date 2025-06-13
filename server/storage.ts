@@ -6,6 +6,7 @@ import {
   faqs,
   quizQuestions,
   marketingAssets,
+  projectWhitelist,
   type User,
   type UpsertUser,
   type Project,
@@ -21,6 +22,8 @@ import {
   type QuizQuestion,
   type InsertMarketingAssets,
   type MarketingAssets,
+  type InsertProjectWhitelist,
+  type ProjectWhitelist,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -62,6 +65,13 @@ export interface IStorage {
   // Marketing Assets operations
   upsertMarketingAssets(data: InsertMarketingAssets): Promise<MarketingAssets>;
   getMarketingAssets(projectId: number): Promise<MarketingAssets | undefined>;
+  
+  // Project Whitelist operations
+  addToWhitelist(data: InsertProjectWhitelist): Promise<ProjectWhitelist>;
+  removeFromWhitelist(projectId: number, email: string): Promise<boolean>;
+  getProjectWhitelist(projectId: number): Promise<ProjectWhitelist[]>;
+  isEmailWhitelisted(projectId: number, email: string): Promise<boolean>;
+  getUserWhitelistedProjects(email: string): Promise<ProjectWithData[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -350,6 +360,77 @@ export class DatabaseStorage implements IStorage {
       .from(marketingAssets)
       .where(eq(marketingAssets.projectId, projectId));
     return result;
+  }
+
+  // Project Whitelist operations
+  async addToWhitelist(data: InsertProjectWhitelist): Promise<ProjectWhitelist> {
+    const [whitelist] = await db
+      .insert(projectWhitelist)
+      .values(data)
+      .returning();
+    return whitelist;
+  }
+
+  async removeFromWhitelist(projectId: number, email: string): Promise<boolean> {
+    const result = await db
+      .delete(projectWhitelist)
+      .where(and(
+        eq(projectWhitelist.projectId, projectId),
+        eq(projectWhitelist.email, email)
+      ));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getProjectWhitelist(projectId: number): Promise<ProjectWhitelist[]> {
+    return db.select().from(projectWhitelist).where(eq(projectWhitelist.projectId, projectId));
+  }
+
+  async isEmailWhitelisted(projectId: number, email: string): Promise<boolean> {
+    const [entry] = await db
+      .select()
+      .from(projectWhitelist)
+      .where(and(
+        eq(projectWhitelist.projectId, projectId),
+        eq(projectWhitelist.email, email)
+      ));
+    return !!entry;
+  }
+
+  async getUserWhitelistedProjects(email: string): Promise<ProjectWithData[]> {
+    const whitelistedProjects = await db
+      .select({
+        project: projects,
+        user: users,
+        idoMetrics: idoMetrics,
+        platformContent: platformContent,
+        marketingAssets: marketingAssets,
+      })
+      .from(projectWhitelist)
+      .innerJoin(projects, eq(projectWhitelist.projectId, projects.id))
+      .innerJoin(users, eq(projects.userId, users.id))
+      .leftJoin(idoMetrics, eq(projects.id, idoMetrics.projectId))
+      .leftJoin(platformContent, eq(projects.id, platformContent.projectId))
+      .leftJoin(marketingAssets, eq(projects.id, marketingAssets.projectId))
+      .where(eq(projectWhitelist.email, email));
+
+    const projectsWithData: ProjectWithData[] = [];
+
+    for (const row of whitelistedProjects) {
+      const projectFaqs = await db.select().from(faqs).where(eq(faqs.projectId, row.project.id));
+      const projectQuizQuestions = await db.select().from(quizQuestions).where(eq(quizQuestions.projectId, row.project.id));
+
+      projectsWithData.push({
+        ...row.project,
+        user: row.user,
+        idoMetrics: row.idoMetrics || undefined,
+        platformContent: row.platformContent || undefined,
+        marketingAssets: row.marketingAssets || undefined,
+        faqs: projectFaqs,
+        quizQuestions: projectQuizQuestions,
+      });
+    }
+
+    return projectsWithData;
   }
 }
 

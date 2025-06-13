@@ -248,6 +248,11 @@ export const insertMarketingAssetsSchema = createInsertSchema(marketingAssets).o
   updatedAt: true,
 });
 
+export const insertProjectWhitelistSchema = createInsertSchema(projectWhitelist).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -263,6 +268,8 @@ export type InsertQuizQuestion = z.infer<typeof insertQuizQuestionSchema>;
 export type QuizQuestion = typeof quizQuestions.$inferSelect;
 export type InsertMarketingAssets = z.infer<typeof insertMarketingAssetsSchema>;
 export type MarketingAssets = typeof marketingAssets.$inferSelect;
+export type InsertProjectWhitelist = z.infer<typeof insertProjectWhitelistSchema>;
+export type ProjectWhitelist = typeof projectWhitelist.$inferSelect;
 
 export type ProjectWithData = Project & {
   idoMetrics?: IdoMetrics;
@@ -270,5 +277,6 @@ export type ProjectWithData = Project & {
   faqs: Faq[];
   quizQuestions: QuizQuestion[];
   marketingAssets?: MarketingAssets;
+  whitelist?: ProjectWhitelist[];
   user: User;
 };
