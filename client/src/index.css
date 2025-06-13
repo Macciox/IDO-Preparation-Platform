@@ -1,0 +1,282 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 focus:ring-2 focus:ring-secondary focus:ring-offset-2;
+  }
+
+  .form-field-with-status {
+    @apply flex space-x-3 items-end;
+  }
+
+  .status-badge-confirmed {
+    @apply bg-green-100 text-green-700 border-green-200;
+  }
+
+  .status-badge-not-confirmed {
+    @apply bg-red-100 text-red-700 border-red-200;
+  }
+
+  .status-badge-might-change {
+    @apply bg-yellow-100 text-yellow-700 border-yellow-200;
+  }
+
+  .tab-navigation {
+    @apply border-b border-gray-200 bg-white;
+  }
+
+  .tab-button {
+    @apply border-b-2 py-4 px-1 text-sm font-medium transition-all duration-200;
+  }
+
+  .tab-button-active {
+    @apply border-primary text-primary;
+  }
+
+  .tab-button-inactive {
+    @apply border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300;
+  }
+
+  .progress-circle {
+    @apply relative inline-flex items-center justify-center w-16 h-16;
+  }
+
+  .progress-circle-bg {
+    @apply absolute inset-0 rounded-full;
+  }
+
+  .progress-circle-ready {
+    @apply bg-green-100;
+  }
+
+  .progress-circle-in-progress {
+    @apply bg-yellow-100;
+  }
+
+  .progress-circle-needs-attention {
+    @apply bg-red-100;
+  }
+
+  .progress-circle-text {
+    @apply relative z-10 font-semibold;
+  }
+
+  .progress-circle-text-ready {
+    @apply text-green-600;
+  }
+
+  .progress-circle-text-in-progress {
+    @apply text-yellow-600;
+  }
+
+  .progress-circle-text-needs-attention {
+    @apply text-red-600;
+  }
+
+  .stats-card {
+    @apply bg-white rounded-xl shadow-sm p-6 border border-gray-200;
+  }
+
+  .stats-icon {
+    @apply p-2 rounded-lg;
+  }
+
+  .stats-icon-green {
+    @apply bg-green-100 text-green-600;
+  }
+
+  .stats-icon-blue {
+    @apply bg-blue-100 text-blue-600;
+  }
+
+  .stats-icon-purple {
+    @apply bg-purple-100 text-purple-600;
+  }
+
+  .stats-icon-orange {
+    @apply bg-orange-100 text-orange-600;
+  }
+
+  .social-link-input {
+    @apply flex items-center space-x-0;
+  }
+
+  .social-link-icon {
+    @apply flex items-center px-3 py-2 bg-gray-50 border border-gray-300 rounded-l-lg border-r-0;
+  }
+
+  .social-link-field {
+    @apply flex-1 rounded-l-none border-l-0;
+  }
+
+  .upload-area {
+    @apply border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary/30 transition-colors duration-200 cursor-pointer;
+  }
+
+  .upload-area:hover {
+    @apply bg-gray-50/50;
+  }
+
+  .project-avatar {
+    @apply h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold;
+  }
+
+  .welcome-section {
+    @apply bg-gradient-to-r from-primary to-purple-600 rounded-xl text-white p-8;
+  }
+
+  .welcome-stats {
+    @apply grid grid-cols-3 gap-6 text-center;
+  }
+
+  .welcome-progress {
+    @apply bg-white/20 rounded-lg p-4;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Focus styles for better accessibility */
+.focus-visible:focus-visible {
+  @apply ring-2 ring-primary ring-offset-2 ring-offset-background;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
