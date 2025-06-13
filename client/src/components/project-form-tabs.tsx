@@ -252,11 +252,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
 
   const updateMarketingAssetsMutation = useMutation({
     mutationFn: async (data: z.infer<typeof marketingAssetsSchema>) => {
-      return apiRequest(`/api/projects/${project.id}/marketing-assets`, {
-        method: "POST",
-        body: JSON.stringify({ ...data, projectId: project.id }),
-        headers: { "Content-Type": "application/json" },
-      });
+      return apiRequest(`/api/projects/${project.id}/marketing-assets`, "POST", { ...data, projectId: project.id });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -272,11 +268,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
 
   const createFaqMutation = useMutation({
     mutationFn: async (data: z.infer<typeof faqSchema>) => {
-      return apiRequest(`/api/projects/${project.id}/faqs`, {
-        method: "POST",
-        body: JSON.stringify({ ...data, projectId: project.id }),
-        headers: { "Content-Type": "application/json" },
-      });
+      return apiRequest(`/api/projects/${project.id}/faqs`, "POST", { ...data, projectId: project.id });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -294,7 +286,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
 
   const deleteFaqMutation = useMutation({
     mutationFn: async (faqId: number) => {
-      return apiRequest(`/api/faqs/${faqId}`, { method: "DELETE" });
+      return apiRequest(`/api/faqs/${faqId}`, "DELETE");
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -310,11 +302,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
 
   const createQuizQuestionMutation = useMutation({
     mutationFn: async (data: z.infer<typeof quizQuestionSchema>) => {
-      return apiRequest(`/api/projects/${project.id}/quiz-questions`, {
-        method: "POST",
-        body: JSON.stringify({ ...data, projectId: project.id }),
-        headers: { "Content-Type": "application/json" },
-      });
+      return apiRequest(`/api/projects/${project.id}/quiz-questions`, "POST", { ...data, projectId: project.id });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -332,7 +320,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
 
   const deleteQuizQuestionMutation = useMutation({
     mutationFn: async (questionId: number) => {
-      return apiRequest(`/api/quiz-questions/${questionId}`, { method: "DELETE" });
+      return apiRequest(`/api/quiz-questions/${questionId}`, "DELETE");
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {

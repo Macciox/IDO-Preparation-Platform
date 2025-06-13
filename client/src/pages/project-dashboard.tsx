@@ -149,12 +149,14 @@ export default function ProjectDashboard() {
     if (project.idoMetrics) {
       const fields = [
         project.idoMetrics.whitelistingDateStatus,
+        project.idoMetrics.placingIdoDateStatus,
+        project.idoMetrics.claimingDateStatus,
+        project.idoMetrics.initialDexListingDateStatus,
         project.idoMetrics.tokenPriceStatus,
-        project.idoMetrics.totalAllocationStatus,
+        project.idoMetrics.totalAllocationDollarsStatus,
         project.idoMetrics.vestingPeriodStatus,
         project.idoMetrics.cliffPeriodStatus,
         project.idoMetrics.tgePercentageStatus,
-        project.idoMetrics.transactionIdStatus,
       ];
       sections.metrics = Math.round((fields.filter(s => s === "confirmed").length / fields.length) * 100);
     }
