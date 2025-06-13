@@ -263,11 +263,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
-      const validatedData = insertIdoMetricsSchema.partial().parse({
-        ...req.body,
-        projectId,
-        whitelistingDate: req.body.whitelistingDate ? new Date(req.body.whitelistingDate) : undefined,
-      });
+      const validatedData = {
+        projectId: projectId,
+        whitelistingDate: req.body.whitelistingDate ? new Date(req.body.whitelistingDate) : null,
+        whitelistingDateStatus: req.body.whitelistingDateStatus || "not_confirmed",
+        tokenPrice: req.body.tokenPrice || null,
+        tokenPriceStatus: req.body.tokenPriceStatus || "not_confirmed",
+        totalAllocation: req.body.totalAllocation || null,
+        totalAllocationStatus: req.body.totalAllocationStatus || "not_confirmed",
+        vestingPeriod: req.body.vestingPeriod || null,
+        vestingPeriodStatus: req.body.vestingPeriodStatus || "not_confirmed",
+        cliffPeriod: req.body.cliffPeriod || null,
+        cliffPeriodStatus: req.body.cliffPeriodStatus || "not_confirmed",
+        tgePercentage: req.body.tgePercentage || null,
+        tgePercentageStatus: req.body.tgePercentageStatus || "not_confirmed",
+        transactionId: req.body.transactionId || null,
+        transactionIdStatus: req.body.transactionIdStatus || "not_confirmed",
+      };
       
       const metrics = await storage.upsertIdoMetrics(validatedData);
       res.json(metrics);
@@ -302,10 +314,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
-      const validatedData = insertPlatformContentSchema.partial().parse({
-        ...req.body,
-        projectId,
-      });
+      const validatedData = {
+        projectId: projectId,
+        tagline: req.body.tagline || null,
+        taglineStatus: req.body.taglineStatus || "not_confirmed",
+        description: req.body.description || null,
+        descriptionStatus: req.body.descriptionStatus || "not_confirmed",
+        twitterUrl: req.body.twitterUrl || null,
+        twitterUrlStatus: req.body.twitterUrlStatus || "not_confirmed",
+        telegramUrl: req.body.telegramUrl || null,
+        telegramUrlStatus: req.body.telegramUrlStatus || "not_confirmed",
+        discordUrl: req.body.discordUrl || null,
+        discordUrlStatus: req.body.discordUrlStatus || "not_confirmed",
+        roadmapUrl: req.body.roadmapUrl || null,
+        roadmapUrlStatus: req.body.roadmapUrlStatus || "not_confirmed",
+        teamPageUrl: req.body.teamPageUrl || null,
+        teamPageUrlStatus: req.body.teamPageUrlStatus || "not_confirmed",
+        tokenomicsUrl: req.body.tokenomicsUrl || null,
+        tokenomicsUrlStatus: req.body.tokenomicsUrlStatus || "not_confirmed",
+      };
       
       const content = await storage.upsertPlatformContent(validatedData);
       res.json(content);
@@ -340,10 +367,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
-      const validatedData = insertFaqSchema.parse({
-        ...req.body,
-        projectId,
-      });
+      const validatedData = {
+        projectId: projectId,
+        question: req.body.question,
+        answer: req.body.answer,
+        order: req.body.order || project.faqs.length + 1,
+        status: req.body.status || "not_confirmed",
+      };
       
       const faq = await storage.upsertFaq(validatedData);
       res.status(201).json(faq);
