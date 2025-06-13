@@ -16,9 +16,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Demo login route for testing
+  app.post('/api/demo-login', async (req, res) => {
     try {
+      const { role } = req.body;
+      
+      let userId, email;
+      if (role === 'admin') {
+        userId = 'demo-admin-123';
+        email = 'admin@decubate.com';
+      } else {
+        userId = 'demo-project-456';
+        email = 'project@example.com';
+      }
+      
+      // Create or update demo user
+      await storage.upsertUser({
+        id: userId,
+        email: email,
+        firstName: role === 'admin' ? 'Admin' : 'Project',
+        lastName: 'User',
+        role: role as 'admin' | 'project',
+      });
+      
+      // Set session
+      (req as any).session.userId = userId;
+      
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error with demo login:", error);
+      res.status(500).json({ message: "Failed to login" });
+    }
+  });
+
+  // Auth routes
+  app.get('/api/auth/user', async (req: any, res) => {
+    try {
+      // Check for demo session first
+      if (req.session?.userId) {
+        const user = await storage.getUser(req.session.userId);
+        if (user) {
+          return res.json(user);
+        }
+      }
+      
+      // Fallback to Replit auth
+      if (!req.isAuthenticated() || !req.user?.claims?.sub) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       res.json(user);
