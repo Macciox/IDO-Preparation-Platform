@@ -434,7 +434,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/quiz-questions/:id", isAuthenticated, async (req: any, res) => {
+  app.put("/api/quiz-questions/:id", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const questionId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
@@ -460,7 +460,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/quiz-questions/:id", isAuthenticated, async (req: any, res) => {
+  app.delete("/api/quiz-questions/:id", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const questionId = parseInt(req.params.id);
       const success = await storage.deleteQuizQuestion(questionId);
@@ -477,7 +477,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Marketing Assets routes
-  app.put("/api/projects/:id/marketing-assets", isAuthenticated, async (req: any, res) => {
+  app.put("/api/projects/:id/marketing-assets", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
@@ -515,7 +515,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Stats endpoint for admin dashboard
-  app.get("/api/stats", isAuthenticated, async (req: any, res) => {
+  app.get("/api/stats", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);

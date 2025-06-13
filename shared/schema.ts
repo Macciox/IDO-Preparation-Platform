@@ -131,6 +131,18 @@ export const marketingAssets = pgTable("marketing_assets", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Project whitelist for team member access control
+export const projectWhitelist = pgTable("project_whitelist", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").notNull().references(() => projects.id, { onDelete: "cascade" }),
+  email: varchar("email").notNull(),
+  addedBy: varchar("added_by").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_project_whitelist_project").on(table.projectId),
+  index("idx_project_whitelist_email").on(table.email),
+]);
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   projects: many(projects),
@@ -146,6 +158,7 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
   faqs: many(faqs),
   quizQuestions: many(quizQuestions),
   marketingAssets: one(marketingAssets),
+  whitelist: many(projectWhitelist),
 }));
 
 export const idoMetricsRelations = relations(idoMetrics, ({ one }) => ({
@@ -180,6 +193,17 @@ export const marketingAssetsRelations = relations(marketingAssets, ({ one }) => 
   project: one(projects, {
     fields: [marketingAssets.projectId],
     references: [projects.id],
+  }),
+}));
+
+export const projectWhitelistRelations = relations(projectWhitelist, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectWhitelist.projectId],
+    references: [projects.id],
+  }),
+  addedByUser: one(users, {
+    fields: [projectWhitelist.addedBy],
+    references: [users.id],
   }),
 }));
 
