@@ -158,7 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects", isAuthenticated, async (req: any, res) => {
+  app.post("/api/projects", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
@@ -183,7 +183,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/projects/:id", isAuthenticated, async (req: any, res) => {
+  app.put("/api/projects/:id", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
@@ -217,7 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/projects/:id", isAuthenticated, async (req: any, res) => {
+  app.delete("/api/projects/:id", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
@@ -241,7 +241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // IDO Metrics routes
-  app.put("/api/projects/:id/ido-metrics", isAuthenticated, async (req: any, res) => {
+  app.put("/api/projects/:id/ido-metrics", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
@@ -279,7 +279,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Platform Content routes
-  app.put("/api/projects/:id/platform-content", isAuthenticated, async (req: any, res) => {
+  app.put("/api/projects/:id/platform-content", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
@@ -317,7 +317,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // FAQ routes
-  app.post("/api/projects/:id/faqs", isAuthenticated, async (req: any, res) => {
+  app.post("/api/projects/:id/faqs", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
@@ -380,7 +380,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/faqs/:id", isAuthenticated, async (req: any, res) => {
+  app.delete("/api/faqs/:id", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const faqId = parseInt(req.params.id);
       const success = await storage.deleteFaq(faqId);
@@ -397,7 +397,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Quiz Questions routes
-  app.post("/api/projects/:id/quiz-questions", isAuthenticated, async (req: any, res) => {
+  app.post("/api/projects/:id/quiz-questions", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
