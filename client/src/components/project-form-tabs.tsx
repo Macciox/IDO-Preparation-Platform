@@ -127,16 +127,16 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
   const idoMetricsForm = useForm<z.infer<typeof idoMetricsSchema>>({
     resolver: zodResolver(idoMetricsSchema),
     defaultValues: {
-      whitelistingDate: project.idoMetrics?.whitelistingDate?.toISOString().split('T')[0] || "",
+      whitelistingDate: project.idoMetrics?.whitelistingDate ? new Date(project.idoMetrics.whitelistingDate).toISOString().split('T')[0] : "",
       whitelistingDateStatus: project.idoMetrics?.whitelistingDateStatus || "not_confirmed",
-      placingIdoDate: project.idoMetrics?.placingIdoDate?.toISOString().split('T')[0] || "",
+      placingIdoDate: project.idoMetrics?.placingIdoDate ? new Date(project.idoMetrics.placingIdoDate).toISOString().split('T')[0] : "",
       placingIdoDateStatus: project.idoMetrics?.placingIdoDateStatus || "not_confirmed",
-      claimingDate: project.idoMetrics?.claimingDate?.toISOString().split('T')[0] || "",
+      claimingDate: project.idoMetrics?.claimingDate ? new Date(project.idoMetrics.claimingDate).toISOString().split('T')[0] : "",
       claimingDateStatus: project.idoMetrics?.claimingDateStatus || "not_confirmed",
-      initialDexListingDate: project.idoMetrics?.initialDexListingDate?.toISOString().split('T')[0] || "",
+      initialDexListingDate: project.idoMetrics?.initialDexListingDate ? new Date(project.idoMetrics.initialDexListingDate).toISOString().split('T')[0] : "",
       initialDexListingDateStatus: project.idoMetrics?.initialDexListingDateStatus || "not_confirmed",
       tokenPrice: project.idoMetrics?.tokenPrice?.toString() || "",
-      tokenPriceStatus: project.idoMetrics?.tokenPriceEventStatus || "not_confirmed",
+      tokenPriceStatus: project.idoMetrics?.tokenPriceStatus || "not_confirmed",
       totalAllocation: project.idoMetrics?.totalAllocationDollars?.toString() || "",
       totalAllocationStatus: project.idoMetrics?.totalAllocationDollarsStatus || "not_confirmed",
       vestingPeriod: project.idoMetrics?.vestingPeriod || undefined,
@@ -220,11 +220,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
         totalAllocation: data.totalAllocation ? parseFloat(data.totalAllocation) : null,
         projectId: project.id,
       };
-      return apiRequest(`/api/projects/${project.id}/ido-metrics`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "application/json" },
-      });
+      return apiRequest(`/api/projects/${project.id}/ido-metrics`, "POST", payload);
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -240,11 +236,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
 
   const updatePlatformContentMutation = useMutation({
     mutationFn: async (data: z.infer<typeof platformContentSchema>) => {
-      return apiRequest(`/api/projects/${project.id}/platform-content`, {
-        method: "POST",
-        body: JSON.stringify({ ...data, projectId: project.id }),
-        headers: { "Content-Type": "application/json" },
-      });
+      return apiRequest(`/api/projects/${project.id}/platform-content`, "POST", { ...data, projectId: project.id });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
