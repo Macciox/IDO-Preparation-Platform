@@ -266,6 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertIdoMetricsSchema.partial().parse({
         ...req.body,
         projectId,
+        whitelistingDate: req.body.whitelistingDate ? new Date(req.body.whitelistingDate) : undefined,
       });
       
       const metrics = await storage.upsertIdoMetrics(validatedData);

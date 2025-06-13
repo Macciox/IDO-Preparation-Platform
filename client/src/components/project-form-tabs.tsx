@@ -199,6 +199,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
       toast({ title: "Success", description: "IDO metrics updated successfully!" });
     },
     onError: (error) => {
@@ -222,6 +223,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
       toast({ title: "Success", description: "Platform content updated successfully!" });
     },
     onError: (error) => {
@@ -245,6 +247,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
       setIsFaqDialogOpen(false);
       faqForm.reset();
       toast({ title: "Success", description: "FAQ added successfully!" });
@@ -270,6 +273,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
       setIsQuizDialogOpen(false);
       quizForm.reset();
       toast({ title: "Success", description: "Quiz question added successfully!" });
@@ -295,6 +299,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
       toast({ title: "Success", description: "Marketing assets updated successfully!" });
     },
     onError: (error) => {
@@ -317,6 +322,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
       toast({ title: "Success", description: "FAQ deleted successfully!" });
     },
     onError: (error) => {
