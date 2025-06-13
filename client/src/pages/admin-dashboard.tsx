@@ -155,17 +155,30 @@ export default function AdminDashboard() {
     let total = 0;
     let completed = 0;
 
-    // IDO Metrics (7 fields)
+    // IDO Metrics (19 fields - excluding optional Transaction ID)
     const metrics = project.idoMetrics;
     if (metrics) {
       const fields = [
         metrics.whitelistingDateStatus,
-        metrics.tokenPriceStatus,
-        metrics.totalAllocationStatus,
-        metrics.vestingPeriodStatus,
-        metrics.cliffPeriodStatus,
-        metrics.tgePercentageStatus,
-        metrics.transactionIdStatus,
+        metrics.placingIdoDateStatus,
+        metrics.claimingDateStatus,
+        metrics.initialDexListingDateStatus,
+        metrics.totalAllocationDollarsStatus,
+        metrics.tokenPriceEventStatus,
+        metrics.totalAllocationNativeTokenStatus,
+        metrics.availableAtTgeStatus,
+        metrics.cliffLockStatus,
+        metrics.vestingDurationStatus,
+        metrics.tokenTickerStatus,
+        metrics.networkStatus,
+        metrics.gracePeriodStatus,
+        metrics.minimumTierStatus,
+        metrics.tokenContractAddressStatus,
+        metrics.initialMarketCapExLiquidityStatus,
+        metrics.initialMarketCapStatus,
+        metrics.fullyDilutedMarketCapStatus,
+        metrics.circulatingSupplyTgeStatus,
+        // Note: tokenTransferTxIdStatus is excluded as it's optional
       ];
       total += fields.length;
       completed += fields.filter(status => status === "confirmed").length;
