@@ -9,6 +9,7 @@ import {
   insertFaqSchema,
   insertQuizQuestionSchema,
   insertMarketingAssetsSchema,
+  insertProjectWhitelistSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -535,6 +536,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching stats:", error);
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // Project Whitelist Management routes
+  app.post("/api/projects/:id/whitelist", isAuthenticatedOrDemo, async (req: any, res) => {
+    try {
+      const projectId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Only admins can manage whitelist
+      if (user.role !== "admin") {
+        return res.status(403).json({ message: "Access denied. Admin privileges required." });
+      }
+      
+      const project = await storage.getProjectById(projectId);
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+      
+      const validatedData = insertProjectWhitelistSchema.parse({
+        ...req.body,
+        projectId,
+        addedBy: userId,
+      });
+      
+      const whitelistEntry = await storage.addToWhitelist(validatedData);
+      res.status(201).json(whitelistEntry);
+    } catch (error) {
+      console.error("Error adding to whitelist:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to add to whitelist" });
+    }
+  });
+
+  app.get("/api/projects/:id/whitelist", isAuthenticatedOrDemo, async (req: any, res) => {
+    try {
+      const projectId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Only admins can view whitelist
+      if (user.role !== "admin") {
+        return res.status(403).json({ message: "Access denied. Admin privileges required." });
+      }
+      
+      const whitelist = await storage.getProjectWhitelist(projectId);
+      res.json(whitelist);
+    } catch (error) {
+      console.error("Error fetching whitelist:", error);
+      res.status(500).json({ message: "Failed to fetch whitelist" });
+    }
+  });
+
+  app.delete("/api/projects/:id/whitelist/:email", isAuthenticatedOrDemo, async (req: any, res) => {
+    try {
+      const projectId = parseInt(req.params.id);
+      const email = req.params.email;
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Only admins can manage whitelist
+      if (user.role !== "admin") {
+        return res.status(403).json({ message: "Access denied. Admin privileges required." });
+      }
+      
+      const success = await storage.removeFromWhitelist(projectId, email);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Email not found in whitelist" });
+      }
+      
+      res.json({ message: "Email removed from whitelist successfully" });
+    } catch (error) {
+      console.error("Error removing from whitelist:", error);
+      res.status(500).json({ message: "Failed to remove from whitelist" });
+    }
+  });
+
+  // Get user's whitelisted projects (for project users)
+  app.get("/api/user/whitelisted-projects", isAuthenticatedOrDemo, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      if (user.role === "admin") {
+        // Admins get all projects
+        const projects = await storage.getAllProjects();
+        return res.json(projects);
+      }
+      
+      // Project users get only whitelisted projects
+      const whitelistedProjects = await storage.getUserWhitelistedProjects(user.email || "");
+      res.json(whitelistedProjects);
+    } catch (error) {
+      console.error("Error fetching whitelisted projects:", error);
+      res.status(500).json({ message: "Failed to fetch whitelisted projects" });
     }
   });
 
