@@ -1,0 +1,122 @@
+Project Brief:
+We're building a secure internal landing page to replace our current Event Preparation Google Docs. This page will allow Web3 projects launching on Decubate to input, review, and confirm all IDO-related information in one structured interface — accessible only to their team.
+
+🎯 Objectives:
+Replace Google Docs with a centralized web platform
+
+Each project should only access its own page
+
+Projects can input and confirm data across multiple tabs
+
+Decubate admins can create, monitor, and optionally edit any page
+
+✅ Features Breakdown
+1. Login & Access Control
+Each project will get a dedicated private page
+
+Pages are accessible only to:
+
+Decubate Admins (full access to all projects)
+
+The specific project team (view & edit access to their page only)
+
+Authentication options:
+
+Email/password login
+
+Optional: Magic link or social login
+
+Basic Role-based access control (Admin vs Project)
+
+2. Landing Page Dashboard (For Admins)
+Admin dashboard with:
+
+Button to “Create New Project Page”
+
+List of all projects created
+
+Filter/search by name
+
+See completion status (% of confirmed fields)
+
+Copy button: generates a sharable login link or grants access to a specified email
+
+3. Project Page Template (User View)
+When a project logs in, they land on their own IDO prep page. Page includes:
+
+🟣 Section A: Intro + Social Proof
+Display Decubate IDO stats like:
+
+“$3M+ in rewards distributed”
+
+“30+ successful launches”
+
+“Avg ROI 6.8x”
+
+Project name shown with a personalized welcome
+
+🔵 Section B: Multi-tabbed Form
+Each tab allows input of data + confirmation status.
+
+Tab 1: IDO Metrics
+Whitelisting date
+
+Token price, Allocation
+
+Vesting & Cliff
+
+TGE % and supply
+
+TX ID
+
+[Each input paired with status dropdown: Confirmed, Not Confirmed, Might Still Change]
+
+Tab 2: Platform Content
+Tagline
+
+Description
+
+Social links (Telegram, Twitter, Discord, etc.)
+
+Roadmap link, Team page, Tokenomics file
+
+Tab 3: FAQ & L2E Questions
+Up to 5 FAQ fields
+
+Up to 5 L2E quiz-style questions
+
+Multiple choice options + correct answer input
+
+Tab 4: Marketing Assets
+Upload hero banner, logo, or links to a Google Drive folder
+
+4. Optional Admin Functions (Phase 2)
+Admin can impersonate a project to assist with filling
+
+Admin can lock fields once confirmed
+
+Admin can download/export all project data
+
+Notification system: ping Decubate if project marks key items as Confirmed
+
+🧱 Tech Stack Suggestions
+Frontend: React + Tailwind / Material UI
+
+Backend: Supabase (auth + DB) or Firebase
+
+Authentication: Supabase auth (email/password + role-based)
+
+Form State: React Hook Form or Formik
+
+Storage (if uploading): Supabase storage or Firebase Storage
+
+Optional Hosting: Vercel
+
+🔐 Key Requirements
+Projects can only view/edit their own data
+
+Admin can see/edit all pages
+
+Safe login process (avoid public URLs without auth)
+
+Fields should be saved in real-time or via Save button
