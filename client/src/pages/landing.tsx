@@ -30,10 +30,25 @@ export default function Landing() {
     window.location.href = "/api/login";
   };
 
-  const handleDemoLogin = (role: "admin" | "project") => {
-    // For demo purposes, redirect to login with role context
-    const searchParams = new URLSearchParams({ demo: role });
-    window.location.href = `/api/login?${searchParams.toString()}`;
+  const handleDemoLogin = async (role: "admin" | "project") => {
+    try {
+      const response = await fetch('/api/demo-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ role }),
+      });
+      
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error('Demo login failed');
+      }
+    } catch (error) {
+      console.error('Demo login error:', error);
+    }
   };
 
   return (

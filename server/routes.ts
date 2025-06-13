@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, RequestHandler } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -75,8 +75,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Custom authentication middleware that supports both Replit auth and demo sessions
+  const isAuthenticatedOrDemo: RequestHandler = async (req: any, res, next) => {
+    // Check for demo session first
+    if (req.session?.userId) {
+      const user = await storage.getUser(req.session.userId);
+      if (user) {
+        req.user = { claims: { sub: user.id } };
+        return next();
+      }
+    }
+    
+    // Fallback to Replit auth
+    return isAuthenticated(req, res, next);
+  };
+
   // Project routes
-  app.get("/api/projects", isAuthenticated, async (req: any, res) => {
+  app.get("/api/projects", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
@@ -99,7 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/projects/:id", isAuthenticated, async (req: any, res) => {
+  app.get("/api/projects/:id", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
