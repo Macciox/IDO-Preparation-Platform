@@ -239,15 +239,25 @@ export class DatabaseStorage implements IStorage {
   
   // IDO Metrics operations
   async upsertIdoMetrics(data: InsertIdoMetrics): Promise<IdoMetrics> {
-    const [result] = await db
-      .insert(idoMetrics)
-      .values(data)
-      .onConflictDoUpdate({
-        target: idoMetrics.projectId,
-        set: { ...data, updatedAt: new Date() },
-      })
-      .returning();
-    return result;
+    // Check if record exists
+    const existing = await this.getIdoMetrics(data.projectId);
+    
+    if (existing) {
+      // Update existing record
+      const [result] = await db
+        .update(idoMetrics)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(idoMetrics.projectId, data.projectId))
+        .returning();
+      return result;
+    } else {
+      // Insert new record
+      const [result] = await db
+        .insert(idoMetrics)
+        .values(data)
+        .returning();
+      return result;
+    }
   }
 
   async getIdoMetrics(projectId: number): Promise<IdoMetrics | undefined> {
@@ -260,15 +270,25 @@ export class DatabaseStorage implements IStorage {
   
   // Platform Content operations
   async upsertPlatformContent(data: InsertPlatformContent): Promise<PlatformContent> {
-    const [result] = await db
-      .insert(platformContent)
-      .values(data)
-      .onConflictDoUpdate({
-        target: platformContent.projectId,
-        set: { ...data, updatedAt: new Date() },
-      })
-      .returning();
-    return result;
+    // Check if record exists
+    const existing = await this.getPlatformContent(data.projectId);
+    
+    if (existing) {
+      // Update existing record
+      const [result] = await db
+        .update(platformContent)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(platformContent.projectId, data.projectId))
+        .returning();
+      return result;
+    } else {
+      // Insert new record
+      const [result] = await db
+        .insert(platformContent)
+        .values(data)
+        .returning();
+      return result;
+    }
   }
 
   async getPlatformContent(projectId: number): Promise<PlatformContent | undefined> {
@@ -343,15 +363,25 @@ export class DatabaseStorage implements IStorage {
   
   // Marketing Assets operations
   async upsertMarketingAssets(data: InsertMarketingAssets): Promise<MarketingAssets> {
-    const [result] = await db
-      .insert(marketingAssets)
-      .values(data)
-      .onConflictDoUpdate({
-        target: marketingAssets.projectId,
-        set: { ...data, updatedAt: new Date() },
-      })
-      .returning();
-    return result;
+    // Check if record exists
+    const existing = await this.getMarketingAssets(data.projectId);
+    
+    if (existing) {
+      // Update existing record
+      const [result] = await db
+        .update(marketingAssets)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(marketingAssets.projectId, data.projectId))
+        .returning();
+      return result;
+    } else {
+      // Insert new record
+      const [result] = await db
+        .insert(marketingAssets)
+        .values(data)
+        .returning();
+      return result;
+    }
   }
 
   async getMarketingAssets(projectId: number): Promise<MarketingAssets | undefined> {
