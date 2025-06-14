@@ -22,9 +22,9 @@ const platformContentFormSchema = insertPlatformContentSchema.extend({
 
 // Status options
 const statusOptions = [
-  { value: "confirmed", label: "✅ Confirmed" },
-  { value: "not_confirmed", label: "❌ Not Confirmed" },
-  { value: "might_change", label: "⚠️ Might Change" },
+  { value: "confirmed", label: "Confirmed" },
+  { value: "not_confirmed", label: "Not Confirmed" },
+  { value: "might_change", label: "Might Change" },
 ];
 
 // Network options
