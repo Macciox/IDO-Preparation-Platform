@@ -410,6 +410,126 @@ export default function ProjectFormTabs({ project, activeTab }: ProjectFormTabsP
                         )}
                       />
                     </div>
+
+                    <div className="flex space-x-3">
+                      <FormField
+                        control={idoMetricsForm.control}
+                        name="vestingPeriod"
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormLabel>Vesting Period (months)</FormLabel>
+                            <FormControl>
+                              <Input placeholder="12" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={idoMetricsForm.control}
+                        name="vestingPeriodStatus"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Status</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="w-40">
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {statusOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex space-x-3">
+                      <FormField
+                        control={idoMetricsForm.control}
+                        name="cliffPeriod"
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormLabel>Cliff Period (months)</FormLabel>
+                            <FormControl>
+                              <Input placeholder="3" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={idoMetricsForm.control}
+                        name="cliffPeriodStatus"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Status</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="w-40">
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {statusOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex space-x-3">
+                      <FormField
+                        control={idoMetricsForm.control}
+                        name="tgePercentage"
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormLabel>TGE Percentage (%)</FormLabel>
+                            <FormControl>
+                              <Input placeholder="20" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={idoMetricsForm.control}
+                        name="tgePercentageStatus"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Status</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="w-40">
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {statusOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-6">
