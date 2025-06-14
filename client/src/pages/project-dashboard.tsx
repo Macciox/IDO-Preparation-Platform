@@ -248,7 +248,9 @@ export default function ProjectDashboard() {
                 <Save className="mr-2 h-4 w-4" />
                 Save Progress
               </Button>
-              <Button variant="outline" size="sm" onClick={() => window.location.href = '/api/login/demo?role=admin'}>
+              <Button variant="outline" size="sm" onClick={() => {
+                window.location.href = '/api/login/demo?role=admin';
+              }}>
                 Switch to Admin View
               </Button>
               <Button variant="ghost" size="sm" onClick={handleLogout}>

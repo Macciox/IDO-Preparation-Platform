@@ -42,9 +42,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set session
       (req as any).session.userId = userId;
+      (req as any).session.role = role;
       
       const user = await storage.getUser(userId);
-      res.json(user);
+      res.redirect('/');
     } catch (error) {
       console.error("Error with demo login:", error);
       res.status(500).json({ message: "Failed to login" });

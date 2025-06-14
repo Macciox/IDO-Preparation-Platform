@@ -280,7 +280,9 @@ export default function AdminDashboard() {
               <div className="text-sm text-gray-500">
                 <span>{user?.firstName || user?.email}</span>
               </div>
-              <Button variant="outline" size="sm" onClick={() => window.location.href = '/api/login/demo?role=project'}>
+              <Button variant="outline" size="sm" onClick={() => {
+                window.location.href = '/api/login/demo?role=project';
+              }}>
                 Switch to Project View
               </Button>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
