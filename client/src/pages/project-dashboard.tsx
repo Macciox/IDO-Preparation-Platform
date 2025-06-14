@@ -35,7 +35,7 @@ export default function ProjectDashboard() {
 
   // For admin users viewing a specific project
   const { data: project, isLoading: projectLoading } = useQuery({
-    queryKey: projectId ? ["/api/projects", projectId] : ["/api/projects"],
+    queryKey: projectId ? ["/api/projects", parseInt(projectId)] : ["/api/projects", "first"],
     queryFn: async () => {
       if (projectId) {
         const response = await fetch(`/api/projects/${projectId}`, {

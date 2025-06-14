@@ -306,8 +306,9 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -1286,8 +1287,9 @@ function PlatformContentTab({ project }: { project: ProjectWithData }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -1788,6 +1790,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -1816,6 +1819,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
   });
 
@@ -1826,6 +1830,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
   });
 
@@ -1845,6 +1850,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
   });
 
@@ -1855,6 +1861,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
   });
 
@@ -1865,6 +1872,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
   });
 
@@ -2175,6 +2183,7 @@ function MarketingTab({ project }: { project: ProjectWithData }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
