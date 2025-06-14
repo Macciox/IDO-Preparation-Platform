@@ -108,17 +108,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Custom authentication middleware that supports both Replit auth and demo sessions
   const isAuthenticatedOrDemo: RequestHandler = async (req: any, res, next) => {
     try {
-      console.log('Auth middleware - Session userId:', req.session?.userId);
-      
       // Always check session first - this is critical for role switching
       if (req.session?.userId) {
         const user = await storage.getUser(req.session.userId);
-        console.log('Auth middleware - Found user:', user?.id, user?.role);
         if (user) {
           req.user = { claims: { sub: user.id }, session: req.session };
           return next();
-        } else {
-          console.log('Auth middleware - User not found for session userId:', req.session.userId);
         }
       }
       
@@ -341,16 +336,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         initialDexListingDateStatus: req.body.initialDexListingDateStatus || "not_confirmed",
         
         // Token Economics
-        idoPrice: req.body.tokenPrice || null,
-        idoPriceStatus: req.body.tokenPriceStatus || "not_confirmed",
-        tokensForSale: req.body.tokensForSale || null,
-        tokensForSaleStatus: req.body.tokensForSaleStatus || "not_confirmed",
-        
-        // Legacy fields for compatibility
-        totalAllocationDollars: req.body.totalAllocationDollars || null,
-        totalAllocationDollarsStatus: req.body.totalAllocationDollarsStatus || "not_confirmed",
         tokenPrice: req.body.tokenPrice || null,
         tokenPriceStatus: req.body.tokenPriceStatus || "not_confirmed",
+        totalAllocationDollars: req.body.totalAllocationDollars || null,
+        totalAllocationDollarsStatus: req.body.totalAllocationDollarsStatus || "not_confirmed",
         vestingPeriod: req.body.vestingPeriod || null,
         vestingPeriodStatus: req.body.vestingPeriodStatus || "not_confirmed",
         cliffPeriod: req.body.cliffPeriod || null,
@@ -508,12 +497,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      const validatedData = insertFaqSchema.partial().parse({
-        ...req.body,
-        id: faqId,
-      });
+      // Ensure required fields are present
+      const faqData = {
+        projectId: Number(req.body.projectId) || 3, // Default to sample project
+        question: String(req.body.question || ""),
+        answer: String(req.body.answer || ""),
+        order: Number(req.body.order || 0),
+        status: req.body.status || "not_confirmed",
+      };
       
-      const faq = await storage.upsertFaq(validatedData);
+      const faq = await storage.upsertFaq(faqData);
       res.json(faq);
     } catch (error) {
       console.error("Error updating FAQ:", error);
@@ -588,12 +581,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      const validatedData = insertQuizQuestionSchema.partial().parse({
-        ...req.body,
-        id: questionId,
-      });
+      // Ensure required fields are present
+      const quizData = {
+        projectId: Number(req.body.projectId) || 3, // Default to sample project
+        question: String(req.body.question || ""),
+        order: Number(req.body.order || 0),
+        optionA: String(req.body.optionA || ""),
+        optionB: String(req.body.optionB || ""),
+        optionC: String(req.body.optionC || ""),
+        correctAnswer: (req.body.correctAnswer as "a" | "b" | "c") || "a",
+        status: req.body.status || "not_confirmed",
+      };
       
-      const question = await storage.upsertQuizQuestion(validatedData);
+      const question = await storage.upsertQuizQuestion(quizData);
       res.json(question);
     } catch (error) {
       console.error("Error updating quiz question:", error);
