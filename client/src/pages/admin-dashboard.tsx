@@ -289,25 +289,10 @@ export default function AdminDashboard() {
               <div className="text-sm text-gray-500">
                 <span>{userFirstName}</span>
               </div>
-              <Button variant="outline" size="sm" onClick={async () => {
-                try {
-                  const response = await fetch('/api/demo-login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ role: 'project' })
-                  });
-                  if (response.ok) {
-                    // Force a full page reload to refresh session
-                    window.location.reload();
-                  }
-                } catch (error) {
-                  console.error('Role switch failed:', error);
-                }
-              }}>
-                Switch to Project View
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4" />
+
+              <Button variant="outline" size="sm" onClick={() => window.location.href = '/api/demo-logout'}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
               </Button>
             </div>
           </div>

@@ -31,14 +31,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email = 'project@example.com';
       }
       
-      // Create or update demo user
-      await storage.upsertUser({
-        id: userId,
-        email: email,
-        firstName: role === 'admin' ? 'Admin' : 'Project',
-        lastName: 'User',
-        role: role as 'admin' | 'project',
-      });
+      // Create or update demo user - handle existing users
+      try {
+        await storage.upsertUser({
+          id: userId,
+          email: email,
+          firstName: role === 'admin' ? 'Admin' : 'Project',
+          lastName: 'User',
+          role: role as 'admin' | 'project',
+        });
+        
+        // If this is a project user, ensure they're whitelisted for the demo project
+        if (role === 'project') {
+          try {
+            await storage.addToWhitelist({
+              projectId: 1, // DemoToken Project
+              email: email,
+            });
+          } catch (whitelistError) {
+            console.log('User already whitelisted or error:', whitelistError);
+          }
+        }
+      } catch (error: any) {
+        // If user already exists, just proceed
+        console.log('User already exists:', error.message);
+      }
       
       // Clear session and set new user
       (req as any).session.userId = userId;
@@ -144,7 +161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (user.role === "admin") {
         projects = await storage.getAllProjects();
       } else {
-        projects = await storage.getUserProjects(userId);
+        // Project users can only see projects they're whitelisted for
+        projects = await storage.getUserWhitelistedProjects(user.email || "");
       }
       
       res.json(projects);
