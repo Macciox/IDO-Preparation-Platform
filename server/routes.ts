@@ -40,18 +40,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: role as 'admin' | 'project',
       });
       
-      // Set session with proper save callback
-      (req as any).session.userId = userId;
-      (req as any).session.role = role;
-      
-      // Force session save before redirect
-      (req as any).session.save((err: any) => {
+      // Clear existing session and set new one
+      req.session.destroy((err: any) => {
         if (err) {
-          console.error('Session save error:', err);
+          console.error('Session destroy error:', err);
         }
-        res.redirect('/');
+        
+        // Create new session
+        req.session.userId = userId;
+        req.session.role = role;
+        
+        // Force session save before redirect
+        req.session.save((saveErr: any) => {
+          if (saveErr) {
+            console.error('Session save error:', saveErr);
+          }
+          res.redirect('/');
+        });
       });
-      return;
     } catch (error) {
       console.error("Error with demo login:", error);
       res.status(500).json({ message: "Failed to login" });
@@ -116,20 +122,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
     
-    // Fallback to default demo user if no session
+    // Initialize default session if none exists
+    if (!req.session?.userId) {
+      req.session.userId = "demo-user-123";
+      req.session.role = "admin";
+    }
+    
+    // Fallback to default demo user
     try {
-      let user = await storage.getUser("demo-user-123");
+      let user = await storage.getUser(req.session.userId);
       if (!user) {
         user = await storage.upsertUser({
-          id: "demo-user-123",
-          email: "demo@example.com",
-          firstName: "Demo",
+          id: req.session.userId,
+          email: req.session.userId === "demo-admin-123" ? "admin@decubate.com" : req.session.userId === "demo-project-456" ? "project@example.com" : "demo@example.com",
+          firstName: req.session.role === 'admin' ? 'Admin' : req.session.role === 'project' ? 'Project' : 'Demo',
           lastName: "User",
           profileImageUrl: null,
-          role: "admin"
+          role: req.session.role || "admin"
         });
       }
-      req.user = { claims: { sub: user.id } };
+      req.user = { claims: { sub: user.id }, session: req.session };
       return next();
     } catch (error) {
       console.error("Demo auth failed:", error);
