@@ -29,20 +29,22 @@ const statusOptions = [
 
 // Network options
 const networkOptions = [
-  { value: "ethereum", label: "Ethereum" },
-  { value: "base", label: "Base" },
-  { value: "polygon", label: "Polygon" },
-  { value: "bsc", label: "BSC" },
-  { value: "arbitrum", label: "Arbitrum" },
+  { value: "not_selected", label: "-" },
+  { value: "ETH", label: "Ethereum" },
+  { value: "Base", label: "Base" },
+  { value: "Polygon", label: "Polygon" },
+  { value: "BSC", label: "BSC" },
+  { value: "Arbitrum", label: "Arbitrum" },
 ];
 
 // Minimum tier options
 const minimumTierOptions = [
-  { value: "base", label: "Base" },
-  { value: "bronze", label: "Bronze" },
-  { value: "silver", label: "Silver" },
-  { value: "gold", label: "Gold" },
-  { value: "platinum", label: "Platinum" },
+  { value: "not_selected", label: "-" },
+  { value: "Base", label: "Base" },
+  { value: "Bronze", label: "Bronze" },
+  { value: "Silver", label: "Silver" },
+  { value: "Gold", label: "Gold" },
+  { value: "Platinum", label: "Platinum" },
   { value: "diamond", label: "Diamond" },
 ];
 

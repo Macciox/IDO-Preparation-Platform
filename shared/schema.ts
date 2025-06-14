@@ -91,9 +91,9 @@ export const idoMetrics = pgTable("ido_metrics", {
   cliffLockStatus: varchar("cliff_lock_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   
   // Additional comprehensive form fields
-  network: varchar("network", { enum: ["ETH", "Base", "Polygon", "BSC", "Arbitrum"] }),
+  network: varchar("network", { enum: ["not_selected", "ETH", "Base", "Polygon", "BSC", "Arbitrum"] }),
   networkStatus: varchar("network_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
-  minimumTier: varchar("minimum_tier", { enum: ["Base", "Bronze", "Silver", "Gold", "Platinum", "Diamond"] }),
+  minimumTier: varchar("minimum_tier", { enum: ["not_selected", "Base", "Bronze", "Silver", "Gold", "Platinum", "Diamond"] }),
   minimumTierStatus: varchar("minimum_tier_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   gracePeriod: varchar("grace_period"),
   gracePeriodStatus: varchar("grace_period_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
