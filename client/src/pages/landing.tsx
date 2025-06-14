@@ -1,180 +1,127 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Rocket, Shield, User, ArrowRight } from "lucide-react";
-
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-  rememberMe: z.boolean().default(false),
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Rocket, Shield, Users, UserCheck, Settings } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Landing() {
-  const form = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
-    },
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [, setLocation] = useLocation();
 
-  const handleLogin = () => {
-    window.location.href = "/api/login";
-  };
-
-  const handleDemoLogin = async (role: "admin" | "project") => {
+  const handleRoleLogin = async (role: 'admin' | 'project') => {
+    setIsLoading(true);
     try {
       const response = await fetch('/api/demo-login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({ role }),
+        credentials: 'include'
       });
       
       if (response.ok) {
-        window.location.reload();
+        // Force page refresh to update auth state
+        window.location.href = '/';
       } else {
-        console.error('Demo login failed');
+        console.error('Login failed');
       }
     } catch (error) {
-      console.error('Demo login error:', error);
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-primary rounded-full flex items-center justify-center mb-6">
-            <Rocket className="text-white h-8 w-8" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-2xl">
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="h-16 w-16 bg-primary rounded-lg flex items-center justify-center">
+              <Rocket className="text-white h-8 w-8" />
+            </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Decubate IDO Platform</h2>
-          <p className="mt-2 text-gray-600">Secure access to your IDO preparation dashboard</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">Decubate IDO Platform</h1>
+          <p className="text-xl text-gray-600 mb-2">Secure internal platform for IDO preparation and management</p>
+          <p className="text-sm text-gray-500">Select your role to access the appropriate dashboard</p>
         </div>
 
-        <Card>
-          <CardContent className="pt-6">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email address</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="email"
-                            placeholder="Enter your email"
-                            className="h-12"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="password"
-                            placeholder="Enter your password"
-                            className="h-12"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <FormField
-                    control={form.control}
-                    name="rememberMe"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel className="text-sm font-normal">
-                            Remember me
-                          </FormLabel>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                  <div className="text-sm">
-                    <a href="#" className="font-medium text-primary hover:text-primary/80">
-                      Forgot password?
-                    </a>
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full h-12 text-sm font-medium"
-                  onClick={handleLogin}
-                >
-                  <span>Sign in</span>
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </form>
-            </Form>
-
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Demo Accounts</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <CardHeader className="text-center pb-4">
+              <div className="flex justify-center mb-3">
+                <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Settings className="text-blue-600 h-6 w-6" />
                 </div>
               </div>
-              
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => handleDemoLogin("admin")}
-                  className="h-10"
-                >
-                  <Shield className="mr-2 h-4 w-4" />
-                  Login as Admin
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handleDemoLogin("project")}
-                  className="h-10"
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  Login as Project
-                </Button>
+              <CardTitle className="text-xl">Administrator</CardTitle>
+              <CardDescription className="text-sm">
+                Manage all projects, create new IDOs, and oversee the entire platform
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Button 
+                onClick={() => handleRoleLogin('admin')} 
+                className="w-full"
+                disabled={isLoading}
+                size="lg"
+              >
+                {isLoading ? "Signing in..." : "Continue as Admin"}
+              </Button>
+              <div className="mt-3 text-xs text-gray-500 text-center">
+                • Full project management<br/>
+                • Create and delete projects<br/>
+                • Access all project data
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <CardHeader className="text-center pb-4">
+              <div className="flex justify-center mb-3">
+                <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <UserCheck className="text-green-600 h-6 w-6" />
+                </div>
+              </div>
+              <CardTitle className="text-xl">Project User</CardTitle>
+              <CardDescription className="text-sm">
+                Access your assigned project and manage IDO preparation details
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Button 
+                onClick={() => handleRoleLogin('project')} 
+                className="w-full"
+                disabled={isLoading}
+                variant="outline"
+                size="lg"
+              >
+                {isLoading ? "Signing in..." : "Continue as Project User"}
+              </Button>
+              <div className="mt-3 text-xs text-gray-500 text-center">
+                • Edit assigned project<br/>
+                • Update IDO metrics<br/>
+                • Manage content and assets
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+          <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+            <Shield className="h-4 w-4" />
+            <span>Secure & Encrypted</span>
+          </div>
+          <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+            <Users className="h-4 w-4" />
+            <span>Internal Use Only</span>
+          </div>
+          <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+            <Rocket className="h-4 w-4" />
+            <span>IDO Management</span>
+          </div>
+        </div>
       </div>
     </div>
   );

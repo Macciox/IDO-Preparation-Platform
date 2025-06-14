@@ -12,14 +12,30 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
+      <Route path="/auth" component={Landing} />
+      {isAuthenticated ? (
+        <>
+          {/* Route based on user role */}
+          <Route path="/">
+            {(user as any)?.role === 'admin' ? <AdminDashboard /> : <ProjectDashboard />}
+          </Route>
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/project" component={ProjectDashboard} />
+          <Route path="/project/:id" component={ProjectDashboard} />
+        </>
       ) : (
         <>
-          <Route path="/" component={AdminDashboard} />
-          <Route path="/project/:id" component={ProjectDashboard} />
+          <Route path="/" component={Landing} />
         </>
       )}
       <Route component={NotFound} />

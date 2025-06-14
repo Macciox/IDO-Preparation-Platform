@@ -67,10 +67,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(500).json({ message: 'Failed to logout' });
         }
         res.clearCookie('connect.sid');
-        res.redirect('/');
+        res.redirect('/auth');
       });
     } else {
-      res.redirect('/');
+      res.redirect('/auth');
     }
   });
 
