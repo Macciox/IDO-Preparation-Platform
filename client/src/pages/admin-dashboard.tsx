@@ -280,8 +280,15 @@ export default function AdminDashboard() {
               <div className="text-sm text-gray-500">
                 <span>{user?.firstName || user?.email}</span>
               </div>
-              <Button variant="outline" size="sm" onClick={() => {
-                window.location.href = '/api/login/demo?role=project';
+              <Button variant="outline" size="sm" onClick={async () => {
+                const response = await fetch('/api/demo-login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ role: 'project' })
+                });
+                if (response.ok) {
+                  window.location.href = '/';
+                }
               }}>
                 Switch to Project View
               </Button>

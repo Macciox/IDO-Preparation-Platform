@@ -248,8 +248,15 @@ export default function ProjectDashboard() {
                 <Save className="mr-2 h-4 w-4" />
                 Save Progress
               </Button>
-              <Button variant="outline" size="sm" onClick={() => {
-                window.location.href = '/api/login/demo?role=admin';
+              <Button variant="outline" size="sm" onClick={async () => {
+                const response = await fetch('/api/demo-login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ role: 'admin' })
+                });
+                if (response.ok) {
+                  window.location.href = '/';
+                }
               }}>
                 Switch to Admin View
               </Button>
