@@ -66,61 +66,78 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
 
   // Calculate progress
   const calculateProgress = () => {
-    const idoMetrics = project.idoMetrics;
-    const platformContent = project.platformContent;
+    const metrics = project.idoMetrics;
+    const content = project.platformContent;
     const faqs = project.faqs || [];
     const quizQuestions = project.quizQuestions || [];
-    const marketingAssets = project.marketingAssets;
+    const assets = project.marketingAssets;
 
-    let totalFields = 0;
-    let completedFields = 0;
+    let total = 0;
+    let completed = 0;
 
-    // IDO Metrics fields (excluding optional transactionId)
-    if (idoMetrics) {
+    // IDO Metrics: 18 fields (excluding optional transactionId)
+    if (metrics) {
       const fields = [
-        'whitelistingDate', 'placingIdoDate', 'claimingDate', 'initialDexListingDate',
-        'tokenPrice', 'totalAllocationDollars', 'vestingPeriod', 'cliffPeriod', 'tgePercentage',
-        'totalAllocationNativeToken', 'network', 'minimumTier', 'gracePeriod',
-        'tokenTicker', 'contractAddress', 'initialMarketCap', 'fullyDilutedMarketCap',
-        'circulatingSupplyTge', 'totalSupply'
+        metrics.whitelistingDateStatus,       // 2.94%
+        metrics.placingIdoDateStatus,         // 2.94%
+        metrics.claimingDateStatus,           // 2.94%
+        metrics.initialDexListingDateStatus,  // 2.94%
+        metrics.totalAllocationDollarsStatus, // 2.94%
+        metrics.tokenPriceStatus,            // 2.94%
+        metrics.totalAllocationNativeTokenStatus, // 2.94%
+        metrics.availableAtTgeStatus,        // 2.94%
+        metrics.cliffLockStatus,             // 2.94%
+        metrics.vestingPeriodStatus,         // 2.94%
+        metrics.networkStatus,               // 2.94%
+        metrics.gracePeriodStatus,           // 2.94%
+        metrics.minimumTierStatus,           // 2.94%
+        metrics.contractAddressStatus,       // 2.94%
+        metrics.initialMarketCapStatus,      // 2.94%
+        metrics.fullyDilutedMarketCapStatus, // 2.94%
+        metrics.circulatingSupplyTgeStatus,  // 2.94%
+        metrics.totalSupplyStatus,           // 2.94%
+        // Note: transactionIdStatus excluded as optional
       ];
-      
-      totalFields += fields.length;
-      completedFields += fields.filter(field => {
-        const value = idoMetrics[field as keyof typeof idoMetrics];
-        return value && value !== "" && value !== "not_selected";
-      }).length;
+      total += fields.length;
+      completed += fields.filter(status => status === "confirmed").length;
     }
 
-    // Platform Content fields
-    if (platformContent) {
-      const fields = ['tagline', 'description', 'telegramUrl', 'discordUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl', 'tokenomicsUrl', 'teamPageUrl', 'roadmapUrl'];
-      totalFields += fields.length;
-      completedFields += fields.filter(field => {
-        const value = platformContent[field as keyof typeof platformContent];
-        return value && value !== "";
-      }).length;
+    // Platform Content: 10 fields
+    if (content) {
+      const fields = [
+        content.taglineStatus,        // 2.94%
+        content.descriptionStatus,    // 2.94%
+        content.telegramUrlStatus,    // 2.94%
+        content.discordUrlStatus,     // 2.94%
+        content.twitterUrlStatus,     // 2.94%
+        content.youtubeUrlStatus,     // 2.94%
+        content.linkedinUrlStatus,    // 2.94%
+        content.roadmapUrlStatus,     // 2.94%
+        content.teamPageUrlStatus,    // 2.94%
+        content.tokenomicsUrlStatus,  // 2.94%
+      ];
+      total += fields.length;
+      completed += fields.filter(status => status === "confirmed").length;
     }
 
-    // FAQ fields
-    totalFields += Math.max(1, faqs.length);
-    completedFields += faqs.filter(faq => faq.question && faq.answer).length;
+    // FAQ & L2E: 2 sections
+    const hasFaqs = faqs.length > 0;
+    const hasQuizzes = quizQuestions.length > 0;
+    total += 2; // 2 sections
+    completed += (hasFaqs ? 1 : 0) + (hasQuizzes ? 1 : 0);
 
-    // Quiz Questions fields
-    totalFields += Math.max(1, quizQuestions.length);
-    completedFields += quizQuestions.filter(q => q.question && q.optionA && q.optionB && q.optionC && q.correctAnswer).length;
-
-    // Marketing Assets fields
-    if (marketingAssets) {
-      const fields = ['logoUrl', 'heroBannerUrl', 'driveFolder'];
-      totalFields += fields.length;
-      completedFields += fields.filter(field => {
-        const value = marketingAssets[field as keyof typeof marketingAssets];
-        return value && value !== "";
-      }).length;
+    // Marketing Assets: 3 fields
+    if (assets) {
+      const fields = [
+        assets.logoStatus,        // 2.94%
+        assets.heroBannerStatus,  // 2.94%
+        assets.driveFolderStatus, // 2.94%
+      ];
+      total += fields.length;
+      completed += fields.filter(status => status === "confirmed").length;
     }
 
-    return totalFields > 0 ? Math.round((completedFields / totalFields) * 100) : 0;
+    return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
 
   const tabs = [
@@ -288,6 +305,7 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
       await apiRequest("PUT", `/api/projects/${project.id}/ido-metrics`, { projectId: project.id, ...data });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
     onError: (error) => {
@@ -1266,6 +1284,7 @@ function PlatformContentTab({ project }: { project: ProjectWithData }) {
       await apiRequest("PUT", `/api/projects/${project.id}/platform-content`, { projectId: project.id, ...data });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
     onError: (error) => {
