@@ -122,29 +122,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "No session" });
       }
       
-      // Initialize default admin session only if no userId is set
-      if (!req.session.userId) {
-        req.session.userId = "demo-user-123";
-        req.session.role = "admin";
-        
-        // Ensure default admin user exists
-        let user = await storage.getUser("demo-user-123");
-        if (!user) {
-          user = await storage.upsertUser({
-            id: "demo-user-123",
-            email: "demo@example.com",
-            firstName: "Demo",
-            lastName: "User",
-            profileImageUrl: null,
-            role: "admin"
-          });
-        }
-        req.user = { claims: { sub: user.id }, session: req.session };
-        return next();
-      }
-      
-      console.log('Auth middleware - Fallthrough unauthorized');
-      return res.status(401).json({ message: "Unauthorized" });
+      // No automatic session creation - user must authenticate via landing page
+      return res.status(401).json({ message: "No session found" });
     } catch (error) {
       console.error("Demo auth failed:", error);
       return res.status(401).json({ message: "Unauthorized" });
