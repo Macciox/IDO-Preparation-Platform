@@ -306,6 +306,7 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
     onError: (error) => {
@@ -1285,6 +1286,7 @@ function PlatformContentTab({ project }: { project: ProjectWithData }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
     onError: (error) => {
@@ -1784,6 +1786,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
     onError: (error) => {
@@ -1811,6 +1814,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       await apiRequest("PUT", `/api/projects/${project.id}/faqs/${data.id}`, data);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
   });
@@ -1820,6 +1824,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       await apiRequest("DELETE", `/api/projects/${project.id}/faqs/${id}`);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
   });
@@ -1838,6 +1843,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
   });
@@ -1847,6 +1853,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       await apiRequest("PUT", `/api/projects/${project.id}/quiz-questions/${data.id}`, data);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
   });
@@ -1856,6 +1863,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       await apiRequest("DELETE", `/api/projects/${project.id}/quiz-questions/${id}`);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
   });
@@ -2165,6 +2173,7 @@ function MarketingTab({ project }: { project: ProjectWithData }) {
       await apiRequest("POST", `/api/projects/${project.id}/marketing-assets`, { projectId: project.id, ...data });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
     },
     onError: (error) => {
