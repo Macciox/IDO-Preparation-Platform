@@ -24,7 +24,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let userId, email;
       if (role === 'admin') {
-        userId = 'demo-admin-123';
+        userId = 'demo-user-123';
         email = 'admin@decubate.com';
       } else {
         userId = 'demo-project-456';
@@ -40,7 +40,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: role as 'admin' | 'project',
       });
       
-      // Set session directly without destroying
+      // Clear session and set new user
       (req as any).session.userId = userId;
       (req as any).session.role = role;
       
@@ -49,6 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (err) {
           console.error('Session save error:', err);
         }
+        console.log(`Session switched to ${role}: ${userId}`);
         res.redirect('/');
       });
     } catch (error) {
@@ -106,36 +107,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Custom authentication middleware that supports both Replit auth and demo sessions
   const isAuthenticatedOrDemo: RequestHandler = async (req: any, res, next) => {
-    // Check for demo session first
-    if (req.session?.userId) {
-      const user = await storage.getUser(req.session.userId);
-      if (user) {
+    try {
+      // Always check session first - this is critical for role switching
+      if (req.session?.userId) {
+        const user = await storage.getUser(req.session.userId);
+        if (user) {
+          req.user = { claims: { sub: user.id }, session: req.session };
+          return next();
+        }
+      }
+      
+      // Only create default session if absolutely no session exists
+      if (!req.session) {
+        return res.status(401).json({ message: "No session" });
+      }
+      
+      // Initialize default admin session only if no userId is set
+      if (!req.session.userId) {
+        req.session.userId = "demo-user-123";
+        req.session.role = "admin";
+        
+        // Ensure default admin user exists
+        let user = await storage.getUser("demo-user-123");
+        if (!user) {
+          user = await storage.upsertUser({
+            id: "demo-user-123",
+            email: "demo@example.com",
+            firstName: "Demo",
+            lastName: "User",
+            profileImageUrl: null,
+            role: "admin"
+          });
+        }
         req.user = { claims: { sub: user.id }, session: req.session };
         return next();
       }
-    }
-    
-    // Initialize default session if none exists
-    if (!req.session?.userId) {
-      req.session.userId = "demo-user-123";
-      req.session.role = "admin";
-    }
-    
-    // Fallback to default demo user
-    try {
-      let user = await storage.getUser(req.session.userId);
-      if (!user) {
-        user = await storage.upsertUser({
-          id: req.session.userId,
-          email: req.session.userId === "demo-admin-123" ? "admin@decubate.com" : req.session.userId === "demo-project-456" ? "project@example.com" : "demo@example.com",
-          firstName: req.session.role === 'admin' ? 'Admin' : req.session.role === 'project' ? 'Project' : 'Demo',
-          lastName: "User",
-          profileImageUrl: null,
-          role: req.session.role || "admin"
-        });
-      }
-      req.user = { claims: { sub: user.id }, session: req.session };
-      return next();
+      
+      return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
       console.error("Demo auth failed:", error);
       return res.status(401).json({ message: "Unauthorized" });
