@@ -285,11 +285,7 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
 
   const updateMutation = useMutation({
     mutationFn: async (data: z.infer<typeof idoMetricsSchema>) => {
-      await apiRequest(`/api/projects/${project.id}/ido-metrics`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId: project.id, ...data }),
-      });
+      await apiRequest("PUT", `/api/projects/${project.id}/ido-metrics`, { projectId: project.id, ...data });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
@@ -1267,11 +1263,7 @@ function PlatformContentTab({ project }: { project: ProjectWithData }) {
 
   const updateMutation = useMutation({
     mutationFn: async (data: z.infer<typeof platformContentSchema>) => {
-      await apiRequest(`/api/projects/${project.id}/platform-content`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId: project.id, ...data }),
-      });
+      await apiRequest("PUT", `/api/projects/${project.id}/platform-content`, { projectId: project.id, ...data });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
@@ -1764,16 +1756,12 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const addFaq = useMutation({
     mutationFn: async (data: { question: string; answer: string }) => {
-      await apiRequest(`/api/projects/${project.id}/faqs`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          projectId: project.id,
-          order: faqs.length + 1,
-          question: data.question,
-          answer: data.answer,
-          status: "not_confirmed"
-        }),
+      await apiRequest("POST", `/api/projects/${project.id}/faqs`, {
+        projectId: project.id,
+        order: faqs.length + 1,
+        question: data.question,
+        answer: data.answer,
+        status: "not_confirmed"
       });
     },
     onSuccess: () => {
@@ -1814,9 +1802,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const deleteFaq = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest(`/api/projects/${project.id}/faqs/${id}`, {
-        method: "DELETE",
-      });
+      await apiRequest("DELETE", `/api/projects/${project.id}/faqs/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
