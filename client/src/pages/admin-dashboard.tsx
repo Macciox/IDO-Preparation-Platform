@@ -164,7 +164,7 @@ export default function AdminDashboard() {
     let total = 0;
     let completed = 0;
 
-    // IDO Metrics Tab - tutti i campi obbligatori (22 campi)
+    // IDO Metrics Tab - 19 campi obbligatori (transactionId escluso)
     const metrics = project.idoMetrics;
     if (metrics) {
       const fields = [
@@ -187,9 +187,6 @@ export default function AdminDashboard() {
         metrics.gracePeriodStatus,
         metrics.contractAddressStatus,
         metrics.initialMarketCapStatus,
-        metrics.fullyDilutedMarketCapStatus,
-        metrics.circulatingSupplyTgeStatus,
-        metrics.totalSupplyStatus,
         // transactionIdStatus escluso (opzionale)
       ];
       total += fields.length;
