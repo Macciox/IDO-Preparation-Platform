@@ -1789,11 +1789,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const updateFaq = useMutation({
     mutationFn: async (data: { id: number; question: string; answer: string; status: string }) => {
-      await apiRequest(`/api/projects/${project.id}/faqs/${data.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      await apiRequest("PUT", `/api/projects/${project.id}/faqs/${data.id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
@@ -1811,19 +1807,15 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const addQuizQuestion = useMutation({
     mutationFn: async (data: { question: string; optionA: string; optionB: string; optionC: string; correctAnswer: string }) => {
-      await apiRequest(`/api/projects/${project.id}/quiz-questions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          projectId: project.id,
-          order: quizQuestions.length + 1,
-          question: data.question,
-          optionA: data.optionA,
-          optionB: data.optionB,
-          optionC: data.optionC,
-          correctAnswer: data.correctAnswer,
-          status: "not_confirmed"
-        }),
+      await apiRequest("POST", `/api/projects/${project.id}/quiz-questions`, {
+        projectId: project.id,
+        order: quizQuestions.length + 1,
+        question: data.question,
+        optionA: data.optionA,
+        optionB: data.optionB,
+        optionC: data.optionC,
+        correctAnswer: data.correctAnswer,
+        status: "not_confirmed"
       });
     },
     onSuccess: () => {
@@ -1833,11 +1825,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const updateQuizQuestion = useMutation({
     mutationFn: async (data: { id: number; status: string }) => {
-      await apiRequest(`/api/projects/${project.id}/quiz-questions/${data.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      await apiRequest("PUT", `/api/projects/${project.id}/quiz-questions/${data.id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
@@ -1846,9 +1834,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const deleteQuizQuestion = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest(`/api/projects/${project.id}/quiz-questions/${id}`, {
-        method: "DELETE",
-      });
+      await apiRequest("DELETE", `/api/projects/${project.id}/quiz-questions/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
@@ -2157,11 +2143,7 @@ function MarketingTab({ project }: { project: ProjectWithData }) {
 
   const updateMutation = useMutation({
     mutationFn: async (data: z.infer<typeof marketingAssetsSchema>) => {
-      await apiRequest(`/api/projects/${project.id}/marketing-assets`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId: project.id, ...data }),
-      });
+      await apiRequest("POST", `/api/projects/${project.id}/marketing-assets`, { projectId: project.id, ...data });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
