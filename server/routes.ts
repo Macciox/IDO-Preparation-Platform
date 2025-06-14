@@ -316,18 +316,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const validatedData = {
         projectId: projectId,
-        whitelistingDate: req.body.whitelistingDate ? new Date(req.body.whitelistingDate) : null,
+        // Important Dates
+        whitelistingDate: req.body.whitelistingDate || null,
         whitelistingDateStatus: req.body.whitelistingDateStatus || "not_confirmed",
+        placingIdoDate: req.body.placingIdoDate || null,
+        placingIdoDateStatus: req.body.placingIdoDateStatus || "not_confirmed",
+        claimingDate: req.body.claimingDate || null,
+        claimingDateStatus: req.body.claimingDateStatus || "not_confirmed",
+        initialDexListingDate: req.body.initialDexListingDate || null,
+        initialDexListingDateStatus: req.body.initialDexListingDateStatus || "not_confirmed",
+        
+        // Token Economics
+        idoPrice: req.body.tokenPrice || null,
+        idoPriceStatus: req.body.tokenPriceStatus || "not_confirmed",
+        tokensForSale: req.body.tokensForSale || null,
+        tokensForSaleStatus: req.body.tokensForSaleStatus || "not_confirmed",
+        
+        // Legacy fields for compatibility
+        totalAllocationDollars: req.body.totalAllocationDollars || null,
+        totalAllocationDollarsStatus: req.body.totalAllocationDollarsStatus || "not_confirmed",
         tokenPrice: req.body.tokenPrice || null,
         tokenPriceStatus: req.body.tokenPriceStatus || "not_confirmed",
-        totalAllocation: req.body.totalAllocation || null,
-        totalAllocationStatus: req.body.totalAllocationStatus || "not_confirmed",
         vestingPeriod: req.body.vestingPeriod || null,
         vestingPeriodStatus: req.body.vestingPeriodStatus || "not_confirmed",
         cliffPeriod: req.body.cliffPeriod || null,
         cliffPeriodStatus: req.body.cliffPeriodStatus || "not_confirmed",
+        
+        // Additional Details
+        totalAllocationNativeToken: req.body.totalAllocationNativeToken || null,
+        totalAllocationNativeTokenStatus: req.body.totalAllocationNativeTokenStatus || "not_confirmed",
+        network: req.body.network || null,
+        networkStatus: req.body.networkStatus || "not_confirmed",
+        minimumTier: req.body.minimumTier || null,
+        minimumTierStatus: req.body.minimumTierStatus || "not_confirmed",
+        gracePeriod: req.body.gracePeriod || null,
+        gracePeriodStatus: req.body.gracePeriodStatus || "not_confirmed",
+        tokenTicker: req.body.tokenTicker || null,
+        tokenTickerStatus: req.body.tokenTickerStatus || "not_confirmed",
+        contractAddress: req.body.contractAddress || null,
+        contractAddressStatus: req.body.contractAddressStatus || "not_confirmed",
+        
+        // TGE Details
         tgePercentage: req.body.tgePercentage || null,
         tgePercentageStatus: req.body.tgePercentageStatus || "not_confirmed",
+        
+        // Token Info
+        initialMarketCap: req.body.initialMarketCap || null,
+        initialMarketCapStatus: req.body.initialMarketCapStatus || "not_confirmed",
+        fullyDilutedMarketCap: req.body.fullyDilutedMarketCap || null,
+        fullyDilutedMarketCapStatus: req.body.fullyDilutedMarketCapStatus || "not_confirmed",
+        circulatingSupplyTge: req.body.circulatingSupplyTge || null,
+        circulatingSupplyTgeStatus: req.body.circulatingSupplyTgeStatus || "not_confirmed",
+        totalSupply: req.body.totalSupply || null,
+        totalSupplyStatus: req.body.totalSupplyStatus || "not_confirmed",
+        
+        // Optional Transaction ID (not counted in progress)
         transactionId: req.body.transactionId || null,
         transactionIdStatus: req.body.transactionIdStatus || "not_confirmed",
       };
