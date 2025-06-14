@@ -164,29 +164,33 @@ export default function AdminDashboard() {
     let total = 0;
     let completed = 0;
 
-    // IDO Metrics Tab - 19 fields (2.63% each)
+    // IDO Metrics Tab - tutti i campi obbligatori (22 campi)
     const metrics = project.idoMetrics;
     if (metrics) {
       const fields = [
-        metrics.whitelistingDateStatus,       // 2.63%
-        metrics.placingIdoDateStatus,         // 2.63%
-        metrics.claimingDateStatus,           // 2.63%
-        metrics.initialDexListingDateStatus,  // 2.63%
-        metrics.totalAllocationDollarsStatus, // 2.63%
-        metrics.tokenPriceStatus,            // 2.63%
-        metrics.totalAllocationNativeTokenStatus, // 2.63%
-        metrics.availableAtTgeStatus,        // 2.63%
-        metrics.cliffLockStatus,             // 2.63%
-        metrics.vestingPeriodStatus,         // 2.63%
-        metrics.networkStatus,               // 2.63%
-        metrics.gracePeriodStatus,           // 2.63%
-        metrics.minimumTierStatus,           // 2.63%
-        metrics.contractAddressStatus,       // 2.63%
-        metrics.initialMarketCapStatus,      // 2.63%
-        metrics.fullyDilutedMarketCapStatus, // 2.63%
-        metrics.circulatingSupplyTgeStatus,  // 2.63%
-        metrics.totalSupplyStatus,           // 2.63%
-        // Note: transactionIdStatus excluded as optional
+        metrics.whitelistingDateStatus,
+        metrics.placingIdoDateStatus,
+        metrics.claimingDateStatus,
+        metrics.initialDexListingDateStatus,
+        metrics.idoPriceStatus,
+        metrics.tokensForSaleStatus,
+        metrics.totalAllocationDollarsStatus,
+        metrics.tokenPriceStatus,
+        metrics.vestingPeriodStatus,
+        metrics.cliffPeriodStatus,
+        metrics.tgePercentageStatus,
+        metrics.totalAllocationNativeTokenStatus,
+        metrics.availableAtTgeStatus,
+        metrics.cliffLockStatus,
+        metrics.networkStatus,
+        metrics.minimumTierStatus,
+        metrics.gracePeriodStatus,
+        metrics.contractAddressStatus,
+        metrics.initialMarketCapStatus,
+        metrics.fullyDilutedMarketCapStatus,
+        metrics.circulatingSupplyTgeStatus,
+        metrics.totalSupplyStatus,
+        // transactionIdStatus escluso (opzionale)
       ];
       total += fields.length;
       completed += fields.filter(status => status === "confirmed").length;

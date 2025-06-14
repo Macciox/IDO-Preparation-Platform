@@ -153,27 +153,46 @@ export default function ProjectDashboard() {
       assets: 0,
     };
 
-    // IDO Metrics
+    // IDO Metrics - tutti i campi obbligatori (22 campi)
     if (project.idoMetrics) {
       const fields = [
         project.idoMetrics.whitelistingDateStatus,
         project.idoMetrics.placingIdoDateStatus,
         project.idoMetrics.claimingDateStatus,
         project.idoMetrics.initialDexListingDateStatus,
-        project.idoMetrics.tokenPriceStatus,
+        project.idoMetrics.idoPriceStatus,
+        project.idoMetrics.tokensForSaleStatus,
         project.idoMetrics.totalAllocationDollarsStatus,
+        project.idoMetrics.tokenPriceStatus,
         project.idoMetrics.vestingPeriodStatus,
         project.idoMetrics.cliffPeriodStatus,
         project.idoMetrics.tgePercentageStatus,
+        project.idoMetrics.totalAllocationNativeTokenStatus,
+        project.idoMetrics.availableAtTgeStatus,
+        project.idoMetrics.cliffLockStatus,
+        project.idoMetrics.networkStatus,
+        project.idoMetrics.minimumTierStatus,
+        project.idoMetrics.gracePeriodStatus,
+        project.idoMetrics.contractAddressStatus,
+        project.idoMetrics.initialMarketCapStatus,
+        project.idoMetrics.fullyDilutedMarketCapStatus,
+        project.idoMetrics.circulatingSupplyTgeStatus,
+        project.idoMetrics.totalSupplyStatus,
+        // transactionIdStatus escluso (opzionale)
       ];
       sections.metrics = Math.round((fields.filter(s => s === "confirmed").length / fields.length) * 100);
     }
 
-    // Platform Content
+    // Platform Content - tutti i campi obbligatori (10 campi)
     if (project.platformContent) {
       const fields = [
         project.platformContent.taglineStatus,
         project.platformContent.descriptionStatus,
+        project.platformContent.twitterUrlStatus,
+        project.platformContent.telegramUrlStatus,
+        project.platformContent.discordUrlStatus,
+        project.platformContent.youtubeUrlStatus,
+        project.platformContent.linkedinUrlStatus,
         project.platformContent.roadmapUrlStatus,
         project.platformContent.teamPageUrlStatus,
         project.platformContent.tokenomicsUrlStatus,
