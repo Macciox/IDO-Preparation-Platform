@@ -74,69 +74,73 @@ export default function ProjectDashboard() {
     let total = 0;
     let completed = 0;
 
-    // IDO Metrics Tab - 19 fields (2.63% each)
+    // IDO Metrics Tab - 20 fields (tutti obbligatori tranne transactionId)
     const metrics = project.idoMetrics;
     if (metrics) {
       const fields = [
-        metrics.whitelistingDateStatus,       // 2.63%
-        metrics.placingIdoDateStatus,         // 2.63%
-        metrics.claimingDateStatus,           // 2.63%
-        metrics.initialDexListingDateStatus,  // 2.63%
-        metrics.totalAllocationDollarsStatus, // 2.63%
-        metrics.tokenPriceStatus,            // 2.63%
-        metrics.totalAllocationNativeTokenStatus, // 2.63%
-        metrics.availableAtTgeStatus,        // 2.63%
-        metrics.cliffLockStatus,             // 2.63%
-        metrics.vestingPeriodStatus,         // 2.63%
-        metrics.networkStatus,               // 2.63%
-        metrics.gracePeriodStatus,           // 2.63%
-        metrics.minimumTierStatus,           // 2.63%
-        metrics.contractAddressStatus,       // 2.63%
-        metrics.initialMarketCapStatus,      // 2.63%
-        metrics.fullyDilutedMarketCapStatus, // 2.63%
-        metrics.circulatingSupplyTgeStatus,  // 2.63%
-        metrics.totalSupplyStatus,           // 2.63%
-        // Note: transactionIdStatus excluded as optional
+        metrics.whitelistingDateStatus,
+        metrics.placingIdoDateStatus,
+        metrics.claimingDateStatus,
+        metrics.initialDexListingDateStatus,
+        metrics.idoPriceStatus,
+        metrics.tokensForSaleStatus,
+        metrics.totalAllocationDollarsStatus,
+        metrics.tokenPriceStatus,
+        metrics.vestingPeriodStatus,
+        metrics.cliffPeriodStatus,
+        metrics.tgePercentageStatus,
+        metrics.totalAllocationNativeTokenStatus,
+        metrics.availableAtTgeStatus,
+        metrics.cliffLockStatus,
+        metrics.networkStatus,
+        metrics.minimumTierStatus,
+        metrics.gracePeriodStatus,
+        metrics.contractAddressStatus,
+        metrics.initialMarketCapStatus,
+        metrics.fullyDilutedMarketCapStatus,
+        metrics.circulatingSupplyTgeStatus,
+        metrics.totalSupplyStatus,
+        // transactionIdStatus escluso (opzionale)
       ];
       total += fields.length;
       completed += fields.filter(status => status === "confirmed").length;
     }
 
-    // Platform Content Tab - 10 fields (5% each)
+    // Platform Content Tab - 10 fields (tutti obbligatori)
     const content = project.platformContent;
     if (content) {
       const fields = [
-        content.taglineStatus,          // 5%
-        content.descriptionStatus,      // 5%
-        content.twitterUrlStatus,       // 5%
-        content.telegramUrlStatus,      // 5%
-        content.discordUrlStatus,       // 5%
-        content.youtubeUrlStatus,       // 5%
-        content.linkedinUrlStatus,      // 5%
-        content.roadmapUrlStatus,       // 5%
-        content.teamPageUrlStatus,      // 5%
-        content.tokenomicsUrlStatus,    // 5%
+        content.taglineStatus,
+        content.descriptionStatus,
+        content.twitterUrlStatus,
+        content.telegramUrlStatus,
+        content.discordUrlStatus,
+        content.youtubeUrlStatus,
+        content.linkedinUrlStatus,
+        content.roadmapUrlStatus,
+        content.teamPageUrlStatus,
+        content.tokenomicsUrlStatus,
       ];
       total += fields.length;
       completed += fields.filter(status => status === "confirmed").length;
     }
 
-    // Marketing Assets Tab - 3 fields (10% each)
+    // Marketing Assets Tab - 3 fields (tutti obbligatori)
     const assets = project.marketingAssets;
     if (assets) {
       const fields = [
-        assets.logoStatus,         // 10%
-        assets.heroBannerStatus,   // 10%
-        assets.driveFolderStatus,  // 10%
+        assets.logoStatus,
+        assets.heroBannerStatus,
+        assets.driveFolderStatus,
       ];
       total += fields.length;
       completed += fields.filter(status => status === "confirmed").length;
     }
 
-    // FAQ & L2E Tab - 2 sections (2.5% each)
+    // FAQ & L2E Tab - 2 sezioni (entrambe obbligatorie)
     total += 2;
-    if (project.faqs.length > 0) completed += 1;       // 2.5%
-    if (project.quizQuestions.length > 0) completed += 1; // 2.5%
+    if (project.faqs.length > 0) completed += 1;
+    if (project.quizQuestions.length > 0) completed += 1;
 
     return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
