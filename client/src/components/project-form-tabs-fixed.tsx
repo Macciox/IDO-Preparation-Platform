@@ -1885,14 +1885,19 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       {/* FAQ Section */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-md font-semibold text-gray-800 pb-2 border-b border-gray-200">
-            Frequently Asked Questions
-          </h4>
+          <div>
+            <h4 className="text-md font-semibold text-gray-800 pb-2 border-b border-gray-200">
+              Frequently Asked Questions
+            </h4>
+            <p className="text-sm text-gray-500 mt-1">
+              {faqs.length}/5 questions • Max 5 FAQ questions allowed
+            </p>
+          </div>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" disabled={faqs.length >= 5}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add FAQ
+                {faqs.length >= 5 ? "Limit Reached" : "Add FAQ"}
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -1925,7 +1930,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                       setNewFaqAnswer("");
                     }
                   }}
-                  disabled={addFaq.isPending}
+                  disabled={addFaq.isPending || faqs.length >= 5}
                 >
                   {addFaq.isPending ? "Adding..." : "Add FAQ"}
                 </Button>
@@ -2017,12 +2022,13 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                     onChange={(e) => setNewQuizQuestion(e.target.value)}
                   />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="option-a">Option A</Label>
                     <Input
                       id="option-a"
                       placeholder="First option"
+                      value={newQuizOptionA}
                       onChange={(e) => setNewQuizOptionA(e.target.value)}
                     />
                   </div>
@@ -2031,6 +2037,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                     <Input
                       id="option-b"
                       placeholder="Second option"
+                      value={newQuizOptionB}
                       onChange={(e) => setNewQuizOptionB(e.target.value)}
                     />
                   </div>
@@ -2039,7 +2046,17 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                     <Input
                       id="option-c"
                       placeholder="Third option"
+                      value={newQuizOptionC}
                       onChange={(e) => setNewQuizOptionC(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="option-d">Option D</Label>
+                    <Input
+                      id="option-d"
+                      placeholder="Fourth option"
+                      value={newQuizOptionD}
+                      onChange={(e) => setNewQuizOptionD(e.target.value)}
                     />
                   </div>
                 </div>
@@ -2059,22 +2076,24 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                 </div>
                 <Button 
                   onClick={() => {
-                    if (newQuizQuestion && newQuizOptionA && newQuizOptionB && newQuizOptionC && newQuizCorrectAnswer) {
+                    if (newQuizQuestion && newQuizOptionA && newQuizOptionB && newQuizOptionC && newQuizOptionD && newQuizCorrectAnswer) {
                       addQuizQuestion.mutate({ 
                         question: newQuizQuestion, 
                         optionA: newQuizOptionA, 
                         optionB: newQuizOptionB, 
                         optionC: newQuizOptionC, 
+                        optionD: newQuizOptionD,
                         correctAnswer: newQuizCorrectAnswer 
                       });
                       setNewQuizQuestion("");
                       setNewQuizOptionA("");
                       setNewQuizOptionB("");
                       setNewQuizOptionC("");
+                      setNewQuizOptionD("");
                       setNewQuizCorrectAnswer("");
                     }
                   }}
-                  disabled={addQuizQuestion.isPending}
+                  disabled={addQuizQuestion.isPending || quizQuestions.length >= 5}
                 >
                   {addQuizQuestion.isPending ? "Adding..." : "Add Question"}
                 </Button>

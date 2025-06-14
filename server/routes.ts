@@ -466,6 +466,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
+      // Check FAQ limit (max 5 questions)
+      if (project.faqs.length >= 5) {
+        return res.status(400).json({ message: "Maximum 5 FAQ questions allowed" });
+      }
+      
       const validatedData = {
         projectId: projectId,
         question: req.body.question,
@@ -553,6 +558,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
+      // Check quiz questions limit (max 5 questions)
+      if (project.quizQuestions.length >= 5) {
+        return res.status(400).json({ message: "Maximum 5 quiz questions allowed" });
+      }
+      
       const validatedData = insertQuizQuestionSchema.parse({
         ...req.body,
         projectId,
@@ -587,7 +597,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         optionA: String(req.body.optionA || ""),
         optionB: String(req.body.optionB || ""),
         optionC: String(req.body.optionC || ""),
-        correctAnswer: (req.body.correctAnswer as "a" | "b" | "c") || "a",
+        optionD: String(req.body.optionD || ""),
+        correctAnswer: (req.body.correctAnswer as "a" | "b" | "c" | "d") || "a",
         status: req.body.status || "not_confirmed",
       };
       
