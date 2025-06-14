@@ -67,30 +67,38 @@ export default function ProjectFormTabs({ project, activeTab }: ProjectFormTabsP
       claimingDateStatus: project.idoMetrics?.claimingDateStatus || "not_confirmed",
       initialDexListingDate: project.idoMetrics?.initialDexListingDate || "",
       initialDexListingDateStatus: project.idoMetrics?.initialDexListingDateStatus || "not_confirmed",
-      idoPrice: project.idoMetrics?.idoPrice || "",
-      idoPriceStatus: project.idoMetrics?.idoPriceStatus || "not_confirmed",
-      tokensForSale: project.idoMetrics?.tokensForSale || "",
-      tokensForSaleStatus: project.idoMetrics?.tokensForSaleStatus || "not_confirmed",
-      availableAtTge: project.idoMetrics?.availableAtTge || "",
-      availableAtTgeStatus: project.idoMetrics?.availableAtTgeStatus || "not_confirmed",
-      cliffLock: project.idoMetrics?.cliffLock || "",
-      cliffLockStatus: project.idoMetrics?.cliffLockStatus || "not_confirmed",
-      vestingDuration: project.idoMetrics?.vestingDuration || "",
-      vestingDurationStatus: project.idoMetrics?.vestingDurationStatus || "not_confirmed",
-      tokenTicker: project.idoMetrics?.tokenTicker || "",
-      tokenTickerStatus: project.idoMetrics?.tokenTickerStatus || "not_confirmed",
+      tokenPrice: project.idoMetrics?.tokenPrice || "",
+      tokenPriceStatus: project.idoMetrics?.tokenPriceStatus || "not_confirmed",
+      totalAllocationDollars: project.idoMetrics?.totalAllocationDollars || "",
+      totalAllocationDollarsStatus: project.idoMetrics?.totalAllocationDollarsStatus || "not_confirmed",
+      vestingPeriod: project.idoMetrics?.vestingPeriod || "",
+      vestingPeriodStatus: project.idoMetrics?.vestingPeriodStatus || "not_confirmed",
+      cliffPeriod: project.idoMetrics?.cliffPeriod || "",
+      cliffPeriodStatus: project.idoMetrics?.cliffPeriodStatus || "not_confirmed",
+      tgePercentage: project.idoMetrics?.tgePercentage || "",
+      tgePercentageStatus: project.idoMetrics?.tgePercentageStatus || "not_confirmed",
+      totalAllocationNativeToken: project.idoMetrics?.totalAllocationNativeToken || "",
+      totalAllocationNativeTokenStatus: project.idoMetrics?.totalAllocationNativeTokenStatus || "not_confirmed",
       network: project.idoMetrics?.network || "",
       networkStatus: project.idoMetrics?.networkStatus || "not_confirmed",
-      gracePeriod: project.idoMetrics?.gracePeriod || "",
-      gracePeriodStatus: project.idoMetrics?.gracePeriodStatus || "not_confirmed",
       minimumTier: project.idoMetrics?.minimumTier || "",
       minimumTierStatus: project.idoMetrics?.minimumTierStatus || "not_confirmed",
-      tokenTransferTxId: project.idoMetrics?.tokenTransferTxId || "",
-      tokenTransferTxIdStatus: project.idoMetrics?.tokenTransferTxIdStatus || "not_confirmed",
-      tokenContractAddress: project.idoMetrics?.tokenContractAddress || "",
-      tokenContractAddressStatus: project.idoMetrics?.tokenContractAddressStatus || "not_confirmed",
+      gracePeriod: project.idoMetrics?.gracePeriod || "",
+      gracePeriodStatus: project.idoMetrics?.gracePeriodStatus || "not_confirmed",
+      tokenTicker: project.idoMetrics?.tokenTicker || "",
+      tokenTickerStatus: project.idoMetrics?.tokenTickerStatus || "not_confirmed",
+      contractAddress: project.idoMetrics?.contractAddress || "",
+      contractAddressStatus: project.idoMetrics?.contractAddressStatus || "not_confirmed",
       transactionId: project.idoMetrics?.transactionId || "",
       transactionIdStatus: project.idoMetrics?.transactionIdStatus || "not_confirmed",
+      initialMarketCap: project.idoMetrics?.initialMarketCap || "",
+      initialMarketCapStatus: project.idoMetrics?.initialMarketCapStatus || "not_confirmed",
+      fullyDilutedMarketCap: project.idoMetrics?.fullyDilutedMarketCap || "",
+      fullyDilutedMarketCapStatus: project.idoMetrics?.fullyDilutedMarketCapStatus || "not_confirmed",
+      circulatingSupplyTge: project.idoMetrics?.circulatingSupplyTge || "",
+      circulatingSupplyTgeStatus: project.idoMetrics?.circulatingSupplyTgeStatus || "not_confirmed",
+      totalSupply: project.idoMetrics?.totalSupply || "",
+      totalSupplyStatus: project.idoMetrics?.totalSupplyStatus || "not_confirmed",
     },
   });
 
@@ -326,7 +334,7 @@ export default function ProjectFormTabs({ project, activeTab }: ProjectFormTabsP
                     <div className="flex space-x-3">
                       <FormField
                         control={idoMetricsForm.control}
-                        name="idoPrice"
+                        name="tokenPrice"
                         render={({ field }) => (
                           <FormItem className="flex-1">
                             <FormLabel>IDO Price</FormLabel>
@@ -339,7 +347,7 @@ export default function ProjectFormTabs({ project, activeTab }: ProjectFormTabsP
                       />
                       <FormField
                         control={idoMetricsForm.control}
-                        name="idoPriceStatus"
+                        name="tokenPriceStatus"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Status</FormLabel>
@@ -366,12 +374,12 @@ export default function ProjectFormTabs({ project, activeTab }: ProjectFormTabsP
                     <div className="flex space-x-3">
                       <FormField
                         control={idoMetricsForm.control}
-                        name="tokensForSale"
+                        name="totalAllocationDollars"
                         render={({ field }) => (
                           <FormItem className="flex-1">
-                            <FormLabel>Tokens for Sale</FormLabel>
+                            <FormLabel>Total Allocation ($)</FormLabel>
                             <FormControl>
-                              <Input placeholder="1000000" {...field} />
+                              <Input placeholder="50000" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -379,7 +387,7 @@ export default function ProjectFormTabs({ project, activeTab }: ProjectFormTabsP
                       />
                       <FormField
                         control={idoMetricsForm.control}
-                        name="tokensForSaleStatus"
+                        name="totalAllocationDollarsStatus"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Status</FormLabel>
