@@ -1268,7 +1268,7 @@ function PlatformContentTab({ project }: { project: ProjectWithData }) {
   const updateMutation = useMutation({
     mutationFn: async (data: z.infer<typeof platformContentSchema>) => {
       await apiRequest(`/api/projects/${project.id}/platform-content`, {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ projectId: project.id, ...data }),
       });
