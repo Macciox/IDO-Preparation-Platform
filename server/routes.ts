@@ -52,6 +52,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Demo logout route
+  app.get('/api/logout', (req, res) => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error('Session destruction error:', err);
+          return res.status(500).json({ message: 'Failed to logout' });
+        }
+        res.clearCookie('connect.sid');
+        res.redirect('/');
+      });
+    } else {
+      res.redirect('/');
+    }
+  });
+
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
     try {
@@ -577,7 +593,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
-      if (!user || user.role !== "admin") {
+      // Check session role for demo switching functionality
+      const sessionRole = req.session?.role || user?.role || 'project';
+      if (!user || (user.role !== "admin" && sessionRole !== "admin" && user.id !== "demo-admin-123")) {
         return res.status(403).json({ message: "Admin access required" });
       }
       
