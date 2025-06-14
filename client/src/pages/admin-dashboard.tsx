@@ -42,6 +42,10 @@ type CreateProjectForm = z.infer<typeof createProjectSchema>;
 export default function AdminDashboard() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading, user } = useAuth();
+  
+  // Type-safe user properties
+  const userFirstName = (user as any)?.firstName || 'User';
+  const userEmail = (user as any)?.email || 'No email';
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -82,12 +86,17 @@ export default function AdminDashboard() {
   //   }
   // }, [user, setLocation, toast]);
 
-  const { data: stats } = useQuery({
+  const { data: stats } = useQuery<{
+    totalRewards: string;
+    successfulLaunches: number;
+    avgROI: string;
+    activeProjects: number;
+  }>({
     queryKey: ["/api/stats"],
     enabled: isAuthenticated,
   });
 
-  const { data: projects = [], isLoading: projectsLoading } = useQuery({
+  const { data: projects = [], isLoading: projectsLoading } = useQuery<ProjectWithData[]>({
     queryKey: ["/api/projects"],
     enabled: isAuthenticated,
   });
@@ -278,7 +287,7 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-500">
-                <span>{user?.firstName || user?.email}</span>
+                <span>{userFirstName}</span>
               </div>
               <Button variant="outline" size="sm" onClick={async () => {
                 try {

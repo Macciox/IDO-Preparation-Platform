@@ -642,12 +642,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
-      const validatedData = insertMarketingAssetsSchema.partial().parse({
-        ...req.body,
-        projectId,
-      });
+      // Ensure required fields are present
+      const assetsData = {
+        projectId: projectId as number,
+        logoUrl: req.body.logoUrl || null,
+        logoStatus: req.body.logoStatus || "not_confirmed",
+        heroBannerUrl: req.body.heroBannerUrl || null,
+        heroBannerStatus: req.body.heroBannerStatus || "not_confirmed",
+        driveFolder: req.body.driveFolder || null,
+        driveFolderStatus: req.body.driveFolderStatus || "not_confirmed",
+      };
       
-      const assets = await storage.upsertMarketingAssets(validatedData);
+      const assets = await storage.upsertMarketingAssets(assetsData);
       res.json(assets);
     } catch (error) {
       console.error("Error updating marketing assets:", error);
