@@ -40,23 +40,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: role as 'admin' | 'project',
       });
       
-      // Clear existing session and set new one
-      req.session.destroy((err: any) => {
+      // Set session directly without destroying
+      (req as any).session.userId = userId;
+      (req as any).session.role = role;
+      
+      // Force session save before redirect
+      (req as any).session.save((err: any) => {
         if (err) {
-          console.error('Session destroy error:', err);
+          console.error('Session save error:', err);
         }
-        
-        // Create new session
-        req.session.userId = userId;
-        req.session.role = role;
-        
-        // Force session save before redirect
-        req.session.save((saveErr: any) => {
-          if (saveErr) {
-            console.error('Session save error:', saveErr);
-          }
-          res.redirect('/');
-        });
+        res.redirect('/');
       });
     } catch (error) {
       console.error("Error with demo login:", error);
