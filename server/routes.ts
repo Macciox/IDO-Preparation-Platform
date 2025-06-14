@@ -40,12 +40,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: role as 'admin' | 'project',
       });
       
-      // Set session
+      // Set session with proper save callback
       (req as any).session.userId = userId;
       (req as any).session.role = role;
       
-      const user = await storage.getUser(userId);
-      res.redirect('/');
+      // Force session save before redirect
+      (req as any).session.save((err: any) => {
+        if (err) {
+          console.error('Session save error:', err);
+        }
+        res.redirect('/');
+      });
+      return;
     } catch (error) {
       console.error("Error with demo login:", error);
       res.status(500).json({ message: "Failed to login" });
@@ -105,12 +111,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (req.session?.userId) {
       const user = await storage.getUser(req.session.userId);
       if (user) {
-        req.user = { claims: { sub: user.id } };
+        req.user = { claims: { sub: user.id }, session: req.session };
         return next();
       }
     }
     
-    // Create demo user for development
+    // Fallback to default demo user if no session
     try {
       let user = await storage.getUser("demo-user-123");
       if (!user) {
@@ -119,7 +125,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: "demo@example.com",
           firstName: "Demo",
           lastName: "User",
-          profileImageUrl: null
+          profileImageUrl: null,
+          role: "admin"
         });
       }
       req.user = { claims: { sub: user.id } };
@@ -603,11 +610,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const projects = await storage.getAllProjects();
       
+      // Count active projects as those with any form data filled out
+      const activeProjects = projects.filter(p => {
+        const hasIdoMetrics = p.idoMetrics && (
+          p.idoMetrics.whitelistingDate || 
+          p.idoMetrics.tokenPrice || 
+          p.idoMetrics.totalAllocationDollars ||
+          p.idoMetrics.vestingPeriod ||
+          p.idoMetrics.placingIdoDate ||
+          p.idoMetrics.network ||
+          p.idoMetrics.minimumTier ||
+          p.idoMetrics.transactionId ||
+          p.idoMetrics.idoPrice ||
+          p.idoMetrics.tokensForSale
+        );
+        const hasPlatformContent = p.platformContent && (
+          p.platformContent.description ||
+          p.platformContent.tagline ||
+          p.platformContent.roadmapUrl ||
+          p.platformContent.teamPageUrl
+        );
+        const hasFaqs = p.faqs && p.faqs.length > 0;
+        const hasQuizQuestions = p.quizQuestions && p.quizQuestions.length > 0;
+        const hasMarketingAssets = p.marketingAssets && (
+          p.marketingAssets.logoUrl ||
+          p.marketingAssets.heroBannerUrl ||
+          p.marketingAssets.driveFolder
+        );
+        
+        return hasIdoMetrics || hasPlatformContent || hasFaqs || hasQuizQuestions || hasMarketingAssets;
+      }).length;
+      
       res.json({
         totalRewards: "$3.2M+",
         successfulLaunches: projects.length,
         avgROI: "6.8x",
-        activeProjects: projects.filter(p => p.updatedAt && new Date(p.updatedAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length,
+        activeProjects: activeProjects,
       });
     } catch (error) {
       console.error("Error fetching stats:", error);
