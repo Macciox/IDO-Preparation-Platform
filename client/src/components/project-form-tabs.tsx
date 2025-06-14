@@ -41,7 +41,25 @@ const statusOptions = [
   { value: "might_change", label: "Might Still Change" },
 ];
 
+const networkOptions = [
+  { value: "ETH", label: "Ethereum (ETH)" },
+  { value: "Base", label: "Base" },
+  { value: "Polygon", label: "Polygon" },
+  { value: "BSC", label: "BSC (Binance Smart Chain)" },
+  { value: "Arbitrum", label: "Arbitrum" },
+];
+
+const minimumTierOptions = [
+  { value: "Base", label: "Base" },
+  { value: "Bronze", label: "Bronze" },
+  { value: "Silver", label: "Silver" },
+  { value: "Gold", label: "Gold" },
+  { value: "Platinum", label: "Platinum" },
+  { value: "Diamond", label: "Diamond" },
+];
+
 const idoMetricsSchema = z.object({
+  // Public Round IDO - Dates
   whitelistingDate: z.string().optional(),
   whitelistingDateStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
   placingIdoDate: z.string().optional(),
@@ -50,16 +68,44 @@ const idoMetricsSchema = z.object({
   claimingDateStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
   initialDexListingDate: z.string().optional(),
   initialDexListingDateStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  
+  // Public Round IDO - Financial
+  totalAllocationDollars: z.string().optional(),
+  totalAllocationDollarsStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
   tokenPrice: z.string().optional(),
   tokenPriceStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
-  totalAllocation: z.string().optional(),
-  totalAllocationStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
-  vestingPeriod: z.number().optional(),
-  vestingPeriodStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
-  cliffPeriod: z.number().optional(),
-  cliffPeriodStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
-  tgePercentage: z.number().optional(),
-  tgePercentageStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  totalAllocationNativeToken: z.string().optional(),
+  totalAllocationNativeTokenStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  availableAtTge: z.string().optional(),
+  availableAtTgeStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  cliffLock: z.string().optional(),
+  cliffLockStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  vestingDuration: z.string().optional(),
+  vestingDurationStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  
+  // Public Round IDO - Token Details
+  tokenTicker: z.string().optional(),
+  tokenTickerStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  network: z.string().optional(),
+  networkStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  gracePeriod: z.string().optional(),
+  gracePeriodStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  minimumTier: z.string().optional(),
+  minimumTierStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  tokenTransferTxId: z.string().optional(),
+  tokenTransferTxIdStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  tokenContractAddress: z.string().optional(),
+  tokenContractAddressStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  
+  // Token Info
+  initialMarketCapExLiquidity: z.string().optional(),
+  initialMarketCapExLiquidityStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  initialMarketCap: z.string().optional(),
+  initialMarketCapStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  fullyDilutedMarketCap: z.string().optional(),
+  fullyDilutedMarketCapStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  circulatingSupplyTge: z.string().optional(),
+  circulatingSupplyTgeStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
   transactionId: z.string().optional(),
   transactionIdStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
 });
@@ -598,10 +644,10 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
                       <div className="flex space-x-3">
                         <FormField
                           control={idoMetricsForm.control}
-                          name="totalAllocation"
+                          name="totalAllocationDollars"
                           render={({ field }) => (
                             <FormItem className="flex-1">
-                              <FormLabel>Total Allocation (USD)</FormLabel>
+                              <FormLabel>Total Allocation in $ (USD)</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
@@ -615,7 +661,51 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
                         />
                         <FormField
                           control={idoMetricsForm.control}
-                          name="totalAllocationStatus"
+                          name="totalAllocationDollarsStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="totalAllocationNativeToken"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Total Allocation in Native Token</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="2000000"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="totalAllocationNativeTokenStatus"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Status</FormLabel>
