@@ -53,31 +53,38 @@ export const idoMetrics = pgTable("ido_metrics", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").references(() => projects.id).notNull(),
   
-  // Public Round (IDO) Metrics
-  whitelistingDate: timestamp("whitelisting_date"),
+  // Public Round (IDO) Metrics - Important Dates
+  whitelistingDate: varchar("whitelisting_date"),
   whitelistingDateStatus: varchar("whitelisting_date_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
-  placingIdoDate: timestamp("placing_ido_date"),
+  placingIdoDate: varchar("placing_ido_date"),
   placingIdoDateStatus: varchar("placing_ido_date_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
-  claimingDate: timestamp("claiming_date"),
+  claimingDate: varchar("claiming_date"),
   claimingDateStatus: varchar("claiming_date_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
-  initialDexListingDate: timestamp("initial_dex_listing_date"),
+  initialDexListingDate: varchar("initial_dex_listing_date"),
   initialDexListingDateStatus: varchar("initial_dex_listing_date_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  
+  // Token Economics
+  idoPrice: varchar("ido_price"),
+  idoPriceStatus: varchar("ido_price_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  tokensForSale: varchar("tokens_for_sale"),
+  tokensForSaleStatus: varchar("tokens_for_sale_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  
+  // Legacy fields to maintain compatibility
   totalAllocationDollars: varchar("total_allocation_dollars"),
   totalAllocationDollarsStatus: varchar("total_allocation_dollars_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   tokenPrice: varchar("token_price"),
   tokenPriceStatus: varchar("token_price_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
-  tokenPriceEvent: varchar("token_price_event"),
-  tokenPriceEventStatus: varchar("token_price_event_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   vestingPeriod: integer("vesting_period"),
   vestingPeriodStatus: varchar("vesting_period_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   cliffPeriod: integer("cliff_period"),
   cliffPeriodStatus: varchar("cliff_period_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   tgePercentage: integer("tge_percentage"),
   tgePercentageStatus: varchar("tge_percentage_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
-  transactionId: varchar("transaction_id"),
-  transactionIdStatus: varchar("transaction_id_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   totalAllocationNativeToken: varchar("total_allocation_native_token"),
   totalAllocationNativeTokenStatus: varchar("total_allocation_native_token_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  
+  transactionId: varchar("transaction_id"),
+  transactionIdStatus: varchar("transaction_id_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   availableAtTge: varchar("available_at_tge"),
   availableAtTgeStatus: varchar("available_at_tge_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   cliffLock: varchar("cliff_lock"),
