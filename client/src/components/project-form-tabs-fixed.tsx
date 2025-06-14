@@ -1999,14 +1999,19 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       {/* Quiz Questions Section */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-md font-semibold text-gray-800 pb-2 border-b border-gray-200">
-            Learn-to-Earn Quiz Questions
-          </h4>
+          <div>
+            <h4 className="text-md font-semibold text-gray-800 pb-2 border-b border-gray-200">
+              Learn-to-Earn Quiz Questions
+            </h4>
+            <p className="text-sm text-gray-500 mt-1">
+              {quizQuestions.length}/5 questions • Max 5 quiz questions allowed
+            </p>
+          </div>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" disabled={quizQuestions.length >= 5}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Question
+                {quizQuestions.length >= 5 ? "Limit Reached" : "Add Question"}
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
