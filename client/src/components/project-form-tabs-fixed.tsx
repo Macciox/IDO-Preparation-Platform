@@ -1774,6 +1774,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
   const [newQuizOptionA, setNewQuizOptionA] = useState("");
   const [newQuizOptionB, setNewQuizOptionB] = useState("");
   const [newQuizOptionC, setNewQuizOptionC] = useState("");
+  const [newQuizOptionD, setNewQuizOptionD] = useState("");
   const [newQuizCorrectAnswer, setNewQuizCorrectAnswer] = useState("");
   const { toast } = useToast();
 
@@ -1835,7 +1836,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
   });
 
   const addQuizQuestion = useMutation({
-    mutationFn: async (data: { question: string; optionA: string; optionB: string; optionC: string; correctAnswer: string }) => {
+    mutationFn: async (data: { question: string; optionA: string; optionB: string; optionC: string; optionD: string; correctAnswer: string }) => {
       await apiRequest("POST", `/api/projects/${project.id}/quiz-questions`, {
         projectId: project.id,
         order: quizQuestions.length + 1,
@@ -1843,6 +1844,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
         optionA: data.optionA,
         optionB: data.optionB,
         optionC: data.optionC,
+        optionD: data.optionD,
         correctAnswer: data.correctAnswer,
         status: "not_confirmed"
       });
@@ -2051,6 +2053,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                       <SelectItem value="a">Option A</SelectItem>
                       <SelectItem value="b">Option B</SelectItem>
                       <SelectItem value="c">Option C</SelectItem>
+                      <SelectItem value="d">Option D</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
