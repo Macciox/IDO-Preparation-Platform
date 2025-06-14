@@ -734,106 +734,15 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
                       <div className="flex space-x-3">
                         <FormField
                           control={idoMetricsForm.control}
-                          name="vestingPeriod"
+                          name="availableAtTge"
                           render={({ field }) => (
                             <FormItem className="flex-1">
-                              <FormLabel>Vesting Period (months)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder="12"
-                                  {...field}
-                                  onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={idoMetricsForm.control}
-                          name="vestingPeriodStatus"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Status</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger className="w-40">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {statusOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="flex space-x-3">
-                        <FormField
-                          control={idoMetricsForm.control}
-                          name="cliffPeriod"
-                          render={({ field }) => (
-                            <FormItem className="flex-1">
-                              <FormLabel>Cliff Period (months)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder="3"
-                                  {...field}
-                                  onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={idoMetricsForm.control}
-                          name="cliffPeriodStatus"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Status</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger className="w-40">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {statusOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="flex space-x-3">
-                        <FormField
-                          control={idoMetricsForm.control}
-                          name="tgePercentage"
-                          render={({ field }) => (
-                            <FormItem className="flex-1">
-                              <FormLabel>TGE Percentage</FormLabel>
+                              <FormLabel>Available at TGE (%)</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
                                   placeholder="20"
                                   {...field}
-                                  onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -842,7 +751,381 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
                         />
                         <FormField
                           control={idoMetricsForm.control}
-                          name="tgePercentageStatus"
+                          name="availableAtTgeStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="cliffLock"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Cliff/Lock</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="6 months"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="cliffLockStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="vestingDuration"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Vesting Duration</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="12 months"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="vestingDurationStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                {/* Token Details Section */}
+                <div className="mb-8">
+                  <h4 className="text-md font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                    Token Details
+                  </h4>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-6">
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="tokenTicker"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Token Ticker</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="TOKEN"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="tokenTickerStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="network"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Network</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select network" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {networkOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="networkStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="gracePeriod"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Grace Period (Days)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="7"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="gracePeriodStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="minimumTier"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Minimum Tier</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select minimum tier" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {minimumTierOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="minimumTierStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="tokenTransferTxId"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Token Transfer TX-ID</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="0x..."
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="tokenTransferTxIdStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="w-40">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="tokenContractAddress"
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Token Contract Address</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="0x..."
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={idoMetricsForm.control}
+                          name="tokenContractAddressStatus"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Status</FormLabel>
