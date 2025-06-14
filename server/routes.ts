@@ -58,11 +58,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.session?.userId) {
         const user = await storage.getUser(req.session.userId);
         if (user) {
-          return res.json(user);
+          return res.json({ ...user, role: req.session.role || 'admin' });
         }
       }
       
-      // Create demo user for development
+      // Create demo admin user for development
       let user = await storage.getUser("demo-user-123");
       if (!user) {
         user = await storage.upsertUser({
@@ -73,7 +73,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           profileImageUrl: null
         });
       }
-      return res.json(user);
+      return res.json({ ...user, role: 'admin' });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });

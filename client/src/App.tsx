@@ -18,14 +18,8 @@ function Router() {
         <Route path="/" component={Landing} />
       ) : (
         <>
-          {user?.role === "admin" ? (
-            <>
-              <Route path="/" component={AdminDashboard} />
-              <Route path="/project/:id" component={ProjectDashboard} />
-            </>
-          ) : (
-            <Route path="/" component={ProjectDashboard} />
-          )}
+          <Route path="/" component={AdminDashboard} />
+          <Route path="/project/:id" component={ProjectDashboard} />
         </>
       )}
       <Route component={NotFound} />

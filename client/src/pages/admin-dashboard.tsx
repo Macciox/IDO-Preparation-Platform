@@ -70,26 +70,26 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  // Check if user is admin
-  useEffect(() => {
-    if (user && user.role !== "admin") {
-      toast({
-        title: "Access Denied",
-        description: "Admin access required.",
-        variant: "destructive",
-      });
-      setLocation("/");
-    }
-  }, [user, setLocation, toast]);
+  // Admin access is always available in demo mode
+  // useEffect(() => {
+  //   if (user && user.role !== "admin") {
+  //     toast({
+  //       title: "Access Denied",
+  //       description: "Admin access required.",
+  //       variant: "destructive",
+  //     });
+  //     setLocation("/");
+  //   }
+  // }, [user, setLocation, toast]);
 
   const { data: stats } = useQuery({
     queryKey: ["/api/stats"],
-    enabled: isAuthenticated && user?.role === "admin",
+    enabled: isAuthenticated,
   });
 
   const { data: projects = [], isLoading: projectsLoading } = useQuery({
     queryKey: ["/api/projects"],
-    enabled: isAuthenticated && user?.role === "admin",
+    enabled: isAuthenticated,
   });
 
   const createProjectMutation = useMutation({
@@ -280,6 +280,9 @@ export default function AdminDashboard() {
               <div className="text-sm text-gray-500">
                 <span>{user?.firstName || user?.email}</span>
               </div>
+              <Button variant="outline" size="sm" onClick={() => window.location.href = '/api/login/demo?role=project'}>
+                Switch to Project View
+              </Button>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4" />
               </Button>
