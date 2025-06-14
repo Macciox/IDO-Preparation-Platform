@@ -47,6 +47,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             await storage.addToWhitelist({
               projectId: 1, // DemoToken Project
               email: email,
+              addedBy: 'demo-user-123', // Added by admin
             });
           } catch (whitelistError) {
             console.log('User already whitelisted or error:', whitelistError);
