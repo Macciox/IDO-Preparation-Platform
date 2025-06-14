@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
 import type { ProjectWithData } from "@shared/schema";
 import { insertIdoMetricsSchema, insertPlatformContentSchema } from "@shared/schema";
@@ -50,10 +52,9 @@ const minimumTierOptions = [
 
 interface ProjectFormTabsProps {
   project: ProjectWithData;
-  activeTab: string;
 }
 
-export default function ProjectFormTabs({ project, activeTab }: ProjectFormTabsProps) {
+export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
   const queryClient = useQueryClient();
 
   // IDO Metrics Form
@@ -146,9 +147,15 @@ export default function ProjectFormTabs({ project, activeTab }: ProjectFormTabsP
   });
 
   return (
-    <div>
-      {/* IDO Metrics Tab */}
-      {activeTab === "ido" && (
+    <Tabs defaultValue="ido-metrics" className="w-full">
+      <TabsList className="grid w-full grid-cols-4">
+        <TabsTrigger value="ido-metrics">IDO Metrics</TabsTrigger>
+        <TabsTrigger value="platform-content">Platform Content</TabsTrigger>
+        <TabsTrigger value="faqs">FAQ & L2E</TabsTrigger>
+        <TabsTrigger value="marketing">Marketing Assets</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="ido-metrics" className="mt-6">
         <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-6">Public Round IDO Configuration</h3>
           <Form {...idoMetricsForm}>

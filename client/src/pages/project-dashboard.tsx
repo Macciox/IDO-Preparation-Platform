@@ -288,7 +288,7 @@ export default function ProjectDashboard() {
         </div>
 
         {/* Project Form Tabs */}
-        <ProjectFormTabs project={project} activeTab="ido" />
+        <ProjectFormTabs project={project} />
 
         {/* Progress Summary Card */}
         <Card className="mt-6">
