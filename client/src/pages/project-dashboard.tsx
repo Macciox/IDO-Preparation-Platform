@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LogOut, Save } from "lucide-react";
-import ProjectFormTabs from "@/components/project-form-tabs";
+import ProjectFormTabsFixed from "@/components/project-form-tabs-fixed";
 import type { ProjectWithData } from "@shared/schema";
 
 export default function ProjectDashboard() {
@@ -288,7 +288,7 @@ export default function ProjectDashboard() {
         </div>
 
         {/* Project Form Tabs */}
-        <ProjectFormTabs project={project} />
+        <ProjectFormTabsFixed project={project} />
 
         {/* Progress Summary Card */}
         <Card className="mt-6">
