@@ -57,7 +57,7 @@ export default function ProjectDashboard() {
   });
 
   const handleLogout = () => {
-    window.location.href = "/api/logout";
+    window.location.href = "/api/demo-logout";
   };
 
   const handleSaveProgress = () => {
