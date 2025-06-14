@@ -62,14 +62,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Fallback to Replit auth
-      if (!req.isAuthenticated() || !req.user?.claims?.sub) {
-        return res.status(401).json({ message: "Unauthorized" });
+      // Create demo user for development
+      let user = await storage.getUser("demo-user-123");
+      if (!user) {
+        user = await storage.upsertUser({
+          id: "demo-user-123",
+          email: "demo@example.com",
+          firstName: "Demo",
+          lastName: "User",
+          profileImageUrl: null
+        });
       }
-      
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      return res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
@@ -87,8 +91,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
     
-    // Fallback to Replit auth
-    return isAuthenticated(req, res, next);
+    // Create demo user for development
+    try {
+      let user = await storage.getUser("demo-user-123");
+      if (!user) {
+        user = await storage.upsertUser({
+          id: "demo-user-123",
+          email: "demo@example.com",
+          firstName: "Demo",
+          lastName: "User",
+          profileImageUrl: null
+        });
+      }
+      req.user = { claims: { sub: user.id } };
+      return next();
+    } catch (error) {
+      console.error("Demo auth failed:", error);
+      return res.status(401).json({ message: "Unauthorized" });
+    }
   };
 
   // Project routes
