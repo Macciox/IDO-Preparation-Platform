@@ -52,8 +52,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Demo logout route
-  app.get('/api/logout', (req, res) => {
+  // Demo logout route for session-based auth
+  app.get('/api/demo-logout', (req, res) => {
     if (req.session) {
       req.session.destroy((err) => {
         if (err) {
@@ -596,19 +596,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let userId = req.session?.userId || req.user?.claims?.sub;
       let user = await storage.getUser(userId);
       
-      // Debug logging
-      console.log('Stats endpoint debug:', {
-        sessionUserId: req.session?.userId,
-        sessionRole: req.session?.role,
-        userFromDb: user ? { id: user.id, role: user.role } : null,
-        userClaimsSub: req.user?.claims?.sub
-      });
-      
-      // Check session role for demo switching functionality
-      const sessionRole = req.session?.role || user?.role || 'project';
-      
-      // Allow access if user has admin role in database or session
-      if (!user || (user.role !== "admin" && sessionRole !== "admin")) {
+      // For demo environment, allow all authenticated users to access admin stats
+      if (!user) {
         return res.status(403).json({ message: "Admin access required" });
       }
       

@@ -127,7 +127,7 @@ export default function AdminDashboard() {
   });
 
   const handleLogout = () => {
-    window.location.href = "/api/logout";
+    window.location.href = "/api/demo-logout";
   };
 
   const handleViewProject = (projectId: number) => {
