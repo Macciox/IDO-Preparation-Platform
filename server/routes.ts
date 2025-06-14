@@ -75,7 +75,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.session?.userId) {
         const user = await storage.getUser(req.session.userId);
         if (user) {
-          return res.json({ ...user, role: req.session.role || 'admin' });
+          // Override user role with session role for demo switching
+          const sessionRole = req.session.role || user.role || 'admin';
+          return res.json({ ...user, role: sessionRole });
         }
       }
       
@@ -590,12 +592,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Stats endpoint for admin dashboard
   app.get("/api/stats", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
+      // Handle both demo session and regular auth
+      let userId = req.session?.userId || req.user?.claims?.sub;
+      let user = await storage.getUser(userId);
+      
+      // Debug logging
+      console.log('Stats endpoint debug:', {
+        sessionUserId: req.session?.userId,
+        sessionRole: req.session?.role,
+        userFromDb: user ? { id: user.id, role: user.role } : null,
+        userClaimsSub: req.user?.claims?.sub
+      });
       
       // Check session role for demo switching functionality
       const sessionRole = req.session?.role || user?.role || 'project';
-      if (!user || (user.role !== "admin" && sessionRole !== "admin" && user.id !== "demo-admin-123")) {
+      
+      // Allow access if user has admin role in database or session
+      if (!user || (user.role !== "admin" && sessionRole !== "admin")) {
         return res.status(403).json({ message: "Admin access required" });
       }
       
