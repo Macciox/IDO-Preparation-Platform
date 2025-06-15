@@ -75,7 +75,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     let total = 0;
     let completed = 0;
 
-    // IDO Metrics: 25 fields (tutti i campi dalla lista specifica)
+    // IDO Metrics: 22 fields (4 Important Dates + 6 Token Metrics + 6 Project Details + 6 Token Info)
     if (metrics) {
       const fields = [
         // Important Dates (4 fields)
@@ -83,16 +83,12 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
         metrics.placingIdoDateStatus,
         metrics.claimingDateStatus,
         metrics.initialDexListingDateStatus,
-        // Token Economics (8 fields)
-        metrics.idoPriceStatus,
-        metrics.tokensForSaleStatus,
+        // Token Metrics (6 fields)
         metrics.totalAllocationDollarsStatus,
         metrics.tokenPriceEventStatus,
-        metrics.tokenPriceStatus,
         metrics.totalAllocationNativeTokenStatus,
         metrics.availableAtTgeStatus,
         metrics.cliffLockStatus,
-        metrics.vestingPeriodStatus,
         metrics.vestingDurationStatus,
         // Project Details (6 fields)
         metrics.tokenTickerStatus,
@@ -101,7 +97,7 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
         metrics.minimumTierStatus,
         metrics.transactionIdStatus, // Token Transfer TX-ID
         metrics.contractAddressStatus,
-        // Token Info (7 fields)
+        // Token Info (6 fields)
         metrics.initialMarketCapExLiquidityStatus,
         metrics.initialMarketCapStatus,
         metrics.fullyDilutedMarketCapStatus,
@@ -550,140 +546,20 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
             </div>
           </div>
 
-          {/* Token Economics Section */}
+          {/* Token Metrics Section */}
           <div className="mb-8">
             <h4 className="text-md font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-              Token Economics
+              Token Metrics
             </h4>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
                 <div className="flex space-x-3">
                   <FormField
                     control={form.control}
-                    name="idoPrice"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormLabel>IDO Price</FormLabel>
-                        <FormControl>
-                          <Input placeholder="$0.05" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="idoPriceStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {statusOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="flex space-x-3">
-                  <FormField
-                    control={form.control}
-                    name="tokensForSale"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormLabel>Tokens for Sale</FormLabel>
-                        <FormControl>
-                          <Input placeholder="1,000,000" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="tokensForSaleStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {statusOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="flex space-x-3">
-                  <FormField
-                    control={form.control}
-                    name="tokenPrice"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormLabel>Token Price</FormLabel>
-                        <FormControl>
-                          <Input placeholder="$0.10" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="tokenPriceStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {statusOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="flex space-x-3">
-                  <FormField
-                    control={form.control}
                     name="totalAllocationDollars"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel>Total Allocation ($)</FormLabel>
+                        <FormLabel>Total allocation in $</FormLabel>
                         <FormControl>
                           <Input placeholder="$100,000" {...field} />
                         </FormControl>
@@ -723,7 +599,7 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                     name="tokenPriceEvent"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel>Token Price for Event</FormLabel>
+                        <FormLabel>Token price for an event $</FormLabel>
                         <FormControl>
                           <Input placeholder="$0.08" {...field} />
                         </FormControl>
@@ -760,12 +636,12 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                 <div className="flex space-x-3">
                   <FormField
                     control={form.control}
-                    name="vestingPeriod"
+                    name="totalAllocationNativeToken"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel>Vesting Period</FormLabel>
+                        <FormLabel>Total allocation in native token</FormLabel>
                         <FormControl>
-                          <Input placeholder="12 months" {...field} />
+                          <Input placeholder="1,000,000 TOKENS" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -773,87 +649,7 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                   />
                   <FormField
                     control={form.control}
-                    name="vestingPeriodStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {statusOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="flex space-x-3">
-                  <FormField
-                    control={form.control}
-                    name="vestingDuration"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormLabel>Vesting Duration</FormLabel>
-                        <FormControl>
-                          <Input placeholder="24 months" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="vestingDurationStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {statusOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="flex space-x-3">
-                  <FormField
-                    control={form.control}
-                    name="cliffPeriod"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormLabel>Cliff Period</FormLabel>
-                        <FormControl>
-                          <Input placeholder="3 months" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="cliffPeriodStatus"
+                    name="totalAllocationNativeTokenStatus"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>
@@ -882,57 +678,12 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                 <div className="flex space-x-3">
                   <FormField
                     control={form.control}
-                    name="tgePercentage"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormLabel>TGE Percentage</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            placeholder="10" 
-                            {...field}
-                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="tgePercentageStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {statusOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="flex space-x-3">
-                  <FormField
-                    control={form.control}
                     name="availableAtTge"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel>Available at TGE</FormLabel>
+                        <FormLabel>Available at TGE (%)</FormLabel>
                         <FormControl>
-                          <Input placeholder="500,000 TOKENS" {...field} />
+                          <Input placeholder="10%" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -970,9 +721,9 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                     name="cliffLock"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel>Cliff Lock</FormLabel>
+                        <FormLabel>Cliff/Lock (month)</FormLabel>
                         <FormControl>
-                          <Input placeholder="6 months" {...field} />
+                          <Input placeholder="3 months" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -981,6 +732,177 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                   <FormField
                     control={form.control}
                     name="cliffLockStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="vestingDuration"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Vesting duration (month)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="24 months" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="vestingDurationStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          {/* Project Details Section */}
+          <div className="mb-8">
+            <h4 className="text-md font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+              Project Details
+            </h4>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-6">
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="tokenTicker"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Token Ticker</FormLabel>
+                        <FormControl>
+                          <Input placeholder="TOKEN" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tokenTickerStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="network"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Network</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ethereum" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="networkStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="gracePeriod"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Grace Period (investment protection)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="24 hours" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gracePeriodStatus"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>
