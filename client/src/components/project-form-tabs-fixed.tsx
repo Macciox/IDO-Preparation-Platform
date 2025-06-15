@@ -1922,7 +1922,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
               {faqs.length}/5 questions • Max 5 FAQ questions allowed
             </p>
           </div>
-          <Dialog>
+          <Dialog open={faqDialogOpen} onOpenChange={setFaqDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" disabled={faqs.length >= 5}>
                 <Plus className="h-4 w-4 mr-2" />
@@ -1939,6 +1939,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                   <Input
                     id="question"
                     placeholder="What is the project about?"
+                    value={newFaqQuestion}
                     onChange={(e) => setNewFaqQuestion(e.target.value)}
                   />
                 </div>
@@ -1948,6 +1949,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                     id="answer"
                     rows={4}
                     placeholder="Detailed answer to the question..."
+                    value={newFaqAnswer}
                     onChange={(e) => setNewFaqAnswer(e.target.value)}
                   />
                 </div>
@@ -2036,7 +2038,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
               {quizQuestions.length}/5 questions • Max 5 quiz questions allowed
             </p>
           </div>
-          <Dialog>
+          <Dialog open={quizDialogOpen} onOpenChange={setQuizDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" disabled={quizQuestions.length >= 5}>
                 <Plus className="h-4 w-4 mr-2" />
@@ -2053,6 +2055,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
                   <Input
                     id="quiz-question"
                     placeholder="What is the main purpose of the token?"
+                    value={newQuizQuestion}
                     onChange={(e) => setNewQuizQuestion(e.target.value)}
                   />
                 </div>
