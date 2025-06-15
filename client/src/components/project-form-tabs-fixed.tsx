@@ -62,9 +62,10 @@ const minimumTierOptions = [
 
 export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
   const [activeTab, setActiveTab] = useState("ido-metrics");
+  const [currentProgress, setCurrentProgress] = useState(0);
   const { toast } = useToast();
 
-  // Calculate progress
+  // Calculate progress based on current project data (updates when project changes)
   const calculateProgress = () => {
     const metrics = project.idoMetrics;
     const content = project.platformContent;
@@ -112,16 +113,16 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     // Platform Content: 10 fields
     if (content) {
       const fields = [
-        content.taglineStatus,        // 2.94%
-        content.descriptionStatus,    // 2.94%
-        content.telegramUrlStatus,    // 2.94%
-        content.discordUrlStatus,     // 2.94%
-        content.twitterUrlStatus,     // 2.94%
-        content.youtubeUrlStatus,     // 2.94%
-        content.linkedinUrlStatus,    // 2.94%
-        content.roadmapUrlStatus,     // 2.94%
-        content.teamPageUrlStatus,    // 2.94%
-        content.tokenomicsUrlStatus,  // 2.94%
+        content.taglineStatus,        
+        content.descriptionStatus,    
+        content.telegramUrlStatus,    
+        content.discordUrlStatus,     
+        content.twitterUrlStatus,     
+        content.youtubeUrlStatus,     
+        content.linkedinUrlStatus,    
+        content.roadmapUrlStatus,     
+        content.teamPageUrlStatus,    
+        content.tokenomicsUrlStatus,  
       ];
       total += fields.length;
       completed += fields.filter(status => status === "confirmed").length;
@@ -136,9 +137,9 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
     // Marketing Assets: 3 fields
     if (assets) {
       const fields = [
-        assets.logoStatus,        // 2.94%
-        assets.heroBannerStatus,  // 2.94%
-        assets.driveFolderStatus, // 2.94%
+        assets.logoStatus,        
+        assets.heroBannerStatus,  
+        assets.driveFolderStatus, 
       ];
       total += fields.length;
       completed += fields.filter(status => status === "confirmed").length;
@@ -146,6 +147,11 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
 
     return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
+
+  // Update progress whenever project data changes
+  useEffect(() => {
+    setCurrentProgress(calculateProgress());
+  }, [project]);
 
   const tabs = [
     { id: "ido-metrics", label: "IDO Metrics", icon: ChartBar },
@@ -184,12 +190,12 @@ export default function ProjectFormTabs({ project }: ProjectFormTabsProps) {
       <div className="bg-white p-4 rounded-lg shadow-sm border">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-gray-700">Overall Progress</span>
-          <span className="text-sm font-medium text-gray-900">{calculateProgress()}%</span>
+          <span className="text-sm font-medium text-gray-900">{currentProgress}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
             className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${calculateProgress()}%` }}
+            style={{ width: `${currentProgress}%` }}
           ></div>
         </div>
       </div>
