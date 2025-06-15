@@ -15,31 +15,32 @@ if (!process.env.REPLIT_DOMAINS) {
 const getOidcConfig = memoize(
   async () => {
     return await client.discovery(
-      new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
-      process.env.REPL_ID!
+      new URL(config.auth.issuerUrl),
+      config.auth.replId!
     );
   },
   { maxAge: 3600 * 1000 }
 );
 
+import { config } from './config';
+
 export function getSession() {
-  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
+    conString: config.database.url,
     createTableIfMissing: false,
-    ttl: sessionTtl,
+    ttl: config.auth.sessionTtl,
     tableName: "sessions",
   });
   return session({
-    secret: process.env.SESSION_SECRET!,
+    secret: config.auth.sessionSecret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: sessionTtl,
+      secure: config.server.env === 'production',
+      maxAge: config.auth.sessionTtl,
     },
   });
 }
@@ -84,8 +85,7 @@ export async function setupAuth(app: Express) {
     verified(null, user);
   };
 
-  for (const domain of process.env
-    .REPLIT_DOMAINS!.split(",")) {
+  for (const domain of config.auth.replitDomains) {
     const strategy = new Strategy(
       {
         name: `replitauth:${domain}`,
@@ -127,10 +127,21 @@ export async function setupAuth(app: Express) {
   });
 }
 
-export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  const user = req.user as any;
+// Define proper type for authenticated user
+interface AuthenticatedUser {
+  claims: {
+    sub: string;
+    [key: string]: any;
+  };
+  access_token?: string;
+  refresh_token?: string;
+  expires_at?: number;
+}
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  const user = req.user as AuthenticatedUser | undefined;
+
+  if (!req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -141,8 +152,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 
   const refreshToken = user.refresh_token;
   if (!refreshToken) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
@@ -151,7 +161,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     updateUserSession(user, tokenResponse);
     return next();
   } catch (error) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
+    console.error("Token refresh failed:", error);
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };

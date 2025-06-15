@@ -13,23 +13,34 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 
+// Import progress routes
+import progressRoutes from './routes/progress';
+import { nanoid } from "nanoid";
+import { db } from "./db";
+import { users, eq } from "@shared/schema";
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
+  
+  // Register progress routes
+  app.use('/api/progress', progressRoutes);
 
   // Demo login route for testing
   app.post('/api/demo-login', async (req, res) => {
     try {
-      const { role } = req.body;
+      // Validate input with Zod
+      const loginSchema = z.object({
+        role: z.enum(['admin', 'project'])
+      });
       
-      let userId, email;
-      if (role === 'admin') {
-        userId = 'demo-user-123';
-        email = 'admin@decubate.com';
-      } else {
-        userId = 'demo-project-456';
-        email = 'project@example.com';
-      }
+      const { role } = loginSchema.parse(req.body);
+      
+      // Use nanoid to generate unique IDs instead of hardcoded values
+      const userId = `demo-${role}-${nanoid(8)}`;
+      const email = role === 'admin' 
+        ? `admin-${nanoid(6)}@example.com` 
+        : `project-${nanoid(6)}@example.com`;
       
       // Create or update demo user - handle existing users
       try {
@@ -38,19 +49,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: email,
           firstName: role === 'admin' ? 'Admin' : 'Project',
           lastName: 'User',
-          role: role as 'admin' | 'project',
+          role: role,
         });
         
         // If this is a project user, ensure they're whitelisted for the demo project
         if (role === 'project') {
           try {
+            // Get an admin user for the whitelist
+            const [adminUser] = await db.select().from(users).where(eq(users.role, 'admin')).limit(1);
+            const adminId = adminUser?.id || userId;
+            
             await storage.addToWhitelist({
               projectId: 1, // DemoToken Project
               email: email,
-              addedBy: 'demo-user-123', // Added by admin
+              addedBy: adminId,
             });
           } catch (whitelistError) {
-            console.log('User already whitelisted or error:', whitelistError);
+            console.error('User whitelist error:', whitelistError);
           }
         }
       } catch (error: any) {
@@ -490,7 +505,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/faqs/:id", isAuthenticated, async (req: any, res) => {
+  app.put("/api/faqs/:id", isAuthenticatedOrDemo, async (req: any, res) => {
     try {
       const faqId = parseInt(req.params.id);
       const userId = req.user.claims.sub;
@@ -500,16 +515,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      // Ensure required fields are present
-      const faqData = {
-        projectId: Number(req.body.projectId) || 3, // Default to sample project
-        question: String(req.body.question || ""),
-        answer: String(req.body.answer || ""),
-        order: Number(req.body.order || 0),
+      // Use Zod schema for validation
+      const validatedData = insertFaqSchema.parse({
+        id: faqId,
+        projectId: req.body.projectId,
+        question: req.body.question,
+        answer: req.body.answer,
+        order: req.body.order || 0,
         status: req.body.status || "not_confirmed",
-      };
+      });
       
-      const faq = await storage.upsertFaq(faqData);
+      const faq = await storage.upsertFaq(validatedData);
       res.json(faq);
     } catch (error) {
       console.error("Error updating FAQ:", error);

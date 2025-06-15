@@ -235,32 +235,78 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllProjects(): Promise<ProjectWithData[]> {
+    // Optimize by using a single query with joins instead of N+1 queries
     const projectsData = await db
-      .select()
+      .select({
+        project: projects,
+        user: users,
+        idoMetrics: idoMetrics,
+        platformContent: platformContent,
+        marketingAssets: marketingAssets,
+      })
       .from(projects)
       .innerJoin(users, eq(projects.userId, users.id))
+      .leftJoin(idoMetrics, eq(projects.id, idoMetrics.projectId))
+      .leftJoin(platformContent, eq(projects.id, platformContent.projectId))
+      .leftJoin(marketingAssets, eq(projects.id, marketingAssets.projectId))
       .orderBy(desc(projects.updatedAt));
     
-    const projectsWithData = await Promise.all(
-      projectsData.map(p => this.getProjectById(p.projects.id))
-    );
+    const projectsWithData: ProjectWithData[] = [];
     
-    return projectsWithData.filter(Boolean) as ProjectWithData[];
+    for (const row of projectsData) {
+      const projectFaqs = await db.select().from(faqs).where(eq(faqs.projectId, row.project.id));
+      const projectQuizQuestions = await db.select().from(quizQuestions).where(eq(quizQuestions.projectId, row.project.id));
+      
+      projectsWithData.push({
+        ...row.project,
+        user: row.user,
+        idoMetrics: row.idoMetrics || undefined,
+        platformContent: row.platformContent || undefined,
+        marketingAssets: row.marketingAssets || undefined,
+        faqs: projectFaqs,
+        quizQuestions: projectQuizQuestions,
+      });
+    }
+    
+    return projectsWithData;
   }
 
   async getUserProjects(userId: string): Promise<ProjectWithData[]> {
+    // Optimize by using a single query with joins instead of N+1 queries
     const projectsData = await db
-      .select()
+      .select({
+        project: projects,
+        user: users,
+        idoMetrics: idoMetrics,
+        platformContent: platformContent,
+        marketingAssets: marketingAssets,
+      })
       .from(projects)
       .where(eq(projects.userId, userId))
       .innerJoin(users, eq(projects.userId, users.id))
+      .leftJoin(idoMetrics, eq(projects.id, idoMetrics.projectId))
+      .leftJoin(platformContent, eq(projects.id, platformContent.projectId))
+      .leftJoin(marketingAssets, eq(projects.id, marketingAssets.projectId))
       .orderBy(desc(projects.updatedAt));
     
-    const projectsWithData = await Promise.all(
-      projectsData.map(p => this.getProjectById(p.projects.id))
-    );
+    const projectsWithData: ProjectWithData[] = [];
     
-    return projectsWithData.filter(Boolean) as ProjectWithData[];
+    for (const row of projectsData) {
+      const projectFaqs = await db.select().from(faqs).where(eq(faqs.projectId, row.project.id));
+      const projectQuizQuestions = await db.select().from(quizQuestions).where(eq(quizQuestions.projectId, row.project.id));
+      
+      projectsWithData.push({
+        ...row.project,
+        user: row.user,
+        idoMetrics: row.idoMetrics || undefined,
+        platformContent: row.platformContent || undefined,
+        marketingAssets: row.marketingAssets || undefined,
+        faqs: projectFaqs,
+        quizQuestions: projectQuizQuestions,
+      });
+    }
+    
+    return projectsWithData;
   }
 
   async updateProject(id: number, updates: Partial<InsertProject>): Promise<Project | undefined> {

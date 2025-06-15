@@ -8,10 +8,18 @@ import {
   serial,
   integer,
   boolean,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
+
+// Common status enum for consistency
+export const STATUS_ENUM = ["confirmed", "not_confirmed", "might_change"] as const;
+export type StatusType = typeof STATUS_ENUM[number];
+
+// URL validation regex
+const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
 
 // Session storage table (mandatory for Replit Auth)
 export const sessions = pgTable(
@@ -46,7 +54,10 @@ export const projects = pgTable("projects", {
   accessToken: varchar("access_token").unique().notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  // Add index for userId for faster user project lookups
+  index("idx_projects_user_id").on(table.userId),
+]);
 
 // IDO Metrics data
 export const idoMetrics = pgTable("ido_metrics", {
@@ -128,27 +139,30 @@ export const platformContent = pgTable("platform_content", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").references(() => projects.id).notNull(),
   tagline: text("tagline"),
-  taglineStatus: varchar("tagline_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  taglineStatus: varchar("tagline_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   description: text("description"),
-  descriptionStatus: varchar("description_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  descriptionStatus: varchar("description_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   telegramUrl: varchar("telegram_url"),
-  telegramUrlStatus: varchar("telegram_url_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  telegramUrlStatus: varchar("telegram_url_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   discordUrl: varchar("discord_url"),
-  discordUrlStatus: varchar("discord_url_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  discordUrlStatus: varchar("discord_url_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   twitterUrl: varchar("twitter_url"),
-  twitterUrlStatus: varchar("twitter_url_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  twitterUrlStatus: varchar("twitter_url_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   youtubeUrl: varchar("youtube_url"),
-  youtubeUrlStatus: varchar("youtube_url_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  youtubeUrlStatus: varchar("youtube_url_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   linkedinUrl: varchar("linkedin_url"),
-  linkedinUrlStatus: varchar("linkedin_url_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  linkedinUrlStatus: varchar("linkedin_url_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   roadmapUrl: varchar("roadmap_url"),
-  roadmapUrlStatus: varchar("roadmap_url_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  roadmapUrlStatus: varchar("roadmap_url_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   teamPageUrl: varchar("team_page_url"),
-  teamPageUrlStatus: varchar("team_page_url_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  teamPageUrlStatus: varchar("team_page_url_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   tokenomicsUrl: varchar("tokenomics_url"),
-  tokenomicsUrlStatus: varchar("tokenomics_url_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  tokenomicsUrlStatus: varchar("tokenomics_url_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  // Add index for projectId for faster lookups
+  index("idx_platform_content_project_id").on(table.projectId),
+]);
 
 // FAQ data
 export const faqs = pgTable("faqs", {
@@ -156,10 +170,14 @@ export const faqs = pgTable("faqs", {
   projectId: integer("project_id").references(() => projects.id).notNull(),
   question: text("question").notNull(),
   answer: text("answer").notNull(),
-  status: varchar("status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  status: varchar("status", { enum: STATUS_ENUM }).default("not_confirmed"),
   order: integer("order").notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  // Add index for projectId and order for faster lookups
+  index("idx_faqs_project_id").on(table.projectId),
+  index("idx_faqs_project_order").on(table.projectId, table.order),
+]);
 
 // L2E Quiz Questions
 export const quizQuestions = pgTable("quiz_questions", {
@@ -171,24 +189,31 @@ export const quizQuestions = pgTable("quiz_questions", {
   optionC: text("option_c").notNull(),
   optionD: text("option_d").notNull(),
   correctAnswer: varchar("correct_answer", { enum: ["a", "b", "c", "d"] }).notNull(),
-  status: varchar("status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  status: varchar("status", { enum: STATUS_ENUM }).default("not_confirmed"),
   order: integer("order").notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  // Add index for projectId and order for faster lookups
+  index("idx_quiz_questions_project_id").on(table.projectId),
+  index("idx_quiz_questions_project_order").on(table.projectId, table.order),
+]);
 
 // Marketing Assets
 export const marketingAssets = pgTable("marketing_assets", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").references(() => projects.id).notNull(),
   logoUrl: varchar("logo_url"),
-  logoStatus: varchar("logo_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  logoStatus: varchar("logo_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   heroBannerUrl: varchar("hero_banner_url"),
-  heroBannerStatus: varchar("hero_banner_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  heroBannerStatus: varchar("hero_banner_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   driveFolder: varchar("drive_folder"),
-  driveFolderStatus: varchar("drive_folder_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  driveFolderStatus: varchar("drive_folder_status", { enum: STATUS_ENUM }).default("not_confirmed"),
   additionalAssets: jsonb("additional_assets").default([]),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  // Add index for projectId for faster lookups
+  index("idx_marketing_assets_project_id").on(table.projectId),
+]);
 
 // Project whitelist for team member access control
 export const projectWhitelist = pgTable("project_whitelist", {
@@ -200,6 +225,8 @@ export const projectWhitelist = pgTable("project_whitelist", {
 }, (table) => [
   index("idx_project_whitelist_project").on(table.projectId),
   index("idx_project_whitelist_email").on(table.email),
+  // Add a composite index for faster lookups when checking whitelist entries
+  index("idx_project_whitelist_project_email").on(table.projectId, table.email),
 ]);
 
 // Relations
@@ -267,30 +294,82 @@ export const projectWhitelistRelations = relations(projectWhitelist, ({ one }) =
 }));
 
 // Insert schemas
-export const insertUserSchema = createInsertSchema(users).pick({
-  id: true,
-  email: true,
-  firstName: true,
-  lastName: true,
-  profileImageUrl: true,
-  role: true,
-});
+export const insertUserSchema = createInsertSchema(users)
+  .pick({
+    id: true,
+    email: true,
+    firstName: true,
+    lastName: true,
+    profileImageUrl: true,
+    role: true,
+  })
+  .extend({
+    // Add email validation
+    email: z.string().email("Invalid email format").nullable().optional(),
+    // Add URL validation for profile image
+    profileImageUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+  });
 
-export const insertProjectSchema = createInsertSchema(projects).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertProjectSchema = createInsertSchema(projects)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    // Add email validation
+    email: z.string().email("Invalid email format"),
+  });
 
-export const insertIdoMetricsSchema = createInsertSchema(idoMetrics).omit({
-  id: true,
-  updatedAt: true,
-});
+import { 
+  dateSchema, 
+  numericStringSchema, 
+  contractAddressSchema, 
+  tokenTickerSchema 
+} from "./validators";
 
-export const insertPlatformContentSchema = createInsertSchema(platformContent).omit({
-  id: true,
-  updatedAt: true,
-});
+export const insertIdoMetricsSchema = createInsertSchema(idoMetrics)
+  .omit({
+    id: true,
+    updatedAt: true,
+  })
+  .extend({
+    // Add date validation
+    whitelistingDate: dateSchema,
+    placingIdoDate: dateSchema,
+    claimingDate: dateSchema,
+    initialDexListingDate: dateSchema,
+    
+    // Add numeric validation
+    idoPrice: numericStringSchema,
+    tokensForSale: numericStringSchema,
+    totalAllocationDollars: numericStringSchema,
+    tokenPrice: numericStringSchema,
+    tgePercentage: z.number().int().min(0).max(100).nullable().optional(),
+    
+    // Add contract address validation
+    contractAddress: contractAddressSchema,
+    
+    // Add token ticker validation
+    tokenTicker: tokenTickerSchema,
+  });
+
+export const insertPlatformContentSchema = createInsertSchema(platformContent)
+  .omit({
+    id: true,
+    updatedAt: true,
+  })
+  .extend({
+    // Add URL validation for social links
+    telegramUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    discordUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    twitterUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    youtubeUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    linkedinUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    roadmapUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    teamPageUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    tokenomicsUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+  });
 
 export const insertFaqSchema = createInsertSchema(faqs).omit({
   id: true,
@@ -302,15 +381,27 @@ export const insertQuizQuestionSchema = createInsertSchema(quizQuestions).omit({
   updatedAt: true,
 });
 
-export const insertMarketingAssetsSchema = createInsertSchema(marketingAssets).omit({
-  id: true,
-  updatedAt: true,
-});
+export const insertMarketingAssetsSchema = createInsertSchema(marketingAssets)
+  .omit({
+    id: true,
+    updatedAt: true,
+  })
+  .extend({
+    // Add URL validation for asset links
+    logoUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    heroBannerUrl: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+    driveFolder: z.string().regex(URL_REGEX, "Invalid URL format").nullable().optional(),
+  });
 
-export const insertProjectWhitelistSchema = createInsertSchema(projectWhitelist).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertProjectWhitelistSchema = createInsertSchema(projectWhitelist)
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .extend({
+    // Add email validation
+    email: z.string().email("Invalid email format"),
+  });
 
 // Types
 export type UpsertUser = z.infer<typeof insertUserSchema>;
