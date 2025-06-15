@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useProjectProgress } from '../hooks/useProjectProgress';
 import { ProgressIndicator } from './ui/progress-indicator';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface ProjectProgressPanelProps {
   projectId: number;
@@ -12,9 +13,33 @@ interface ProjectProgressPanelProps {
 
 /**
  * Panel component that displays project completion progress
+ * with real-time updates
  */
 export function ProjectProgressPanel({ projectId }: ProjectProgressPanelProps) {
-  const { progress, missingFields, isLoading } = useProjectProgress(projectId);
+  const { 
+    progress, 
+    missingFields, 
+    isLoading, 
+    refetch, 
+    recalculateProgress 
+  } = useProjectProgress(projectId);
+
+  // Set up a listener for form submissions to update progress
+  useEffect(() => {
+    const handleFormSubmit = () => {
+      // Delay the refetch to allow the server to process the update
+      setTimeout(() => {
+        refetch();
+      }, 500);
+    };
+
+    // Listen for custom form submission events
+    window.addEventListener('form-submitted', handleFormSubmit);
+    
+    return () => {
+      window.removeEventListener('form-submitted', handleFormSubmit);
+    };
+  }, [refetch]);
 
   if (isLoading) {
     return (
@@ -35,8 +60,17 @@ export function ProjectProgressPanel({ projectId }: ProjectProgressPanelProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Completion Progress</CardTitle>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => recalculateProgress()}
+          className="flex items-center gap-1"
+        >
+          <RefreshCw className="h-4 w-4" />
+          <span>Refresh</span>
+        </Button>
       </CardHeader>
       <CardContent>
         <div className="mb-6">
