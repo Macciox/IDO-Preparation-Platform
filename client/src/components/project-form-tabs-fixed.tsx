@@ -1376,10 +1376,7 @@ function PlatformContentTab({ project }: { project: ProjectWithData }) {
 
   const updateMutation = useMutation({
     mutationFn: async (data: z.infer<typeof platformContentSchema>) => {
-      await apiRequest(`/api/projects/${project.id}/platform-content`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      await apiRequest(`/api/projects/${project.id}/platform-content`, "PUT", data);
     },
     onSuccess: () => {
       toast({
@@ -1568,10 +1565,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const addFaqMutation = useMutation({
     mutationFn: async (data: { question: string; answer: string }) => {
-      await apiRequest(`/api/projects/${project.id}/faqs`, {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      await apiRequest(`/api/projects/${project.id}/faqs`, "POST", data);
     },
     onSuccess: () => {
       toast({
@@ -1585,10 +1579,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const addQuizMutation = useMutation({
     mutationFn: async (data: { question: string; correctAnswer: string; wrongAnswers: string[] }) => {
-      await apiRequest(`/api/projects/${project.id}/quiz-questions`, {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      await apiRequest(`/api/projects/${project.id}/quiz-questions`, "POST", data);
     },
     onSuccess: () => {
       toast({
@@ -1610,14 +1601,18 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
         </h4>
         
         <div className="space-y-4 mb-6">
-          {project.faqs.map((faq) => (
-            <Card key={faq.id}>
-              <CardContent className="p-4">
-                <h5 className="font-medium text-gray-900">{faq.question}</h5>
-                <p className="text-gray-700 mt-2">{faq.answer}</p>
-              </CardContent>
-            </Card>
-          ))}
+          {project.faqs && project.faqs.length > 0 ? (
+            project.faqs.map((faq) => (
+              <Card key={faq.id}>
+                <CardContent className="p-4">
+                  <h5 className="font-medium text-gray-900">{faq.question}</h5>
+                  <p className="text-gray-700 mt-2">{faq.answer}</p>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-gray-500 text-center py-4">No FAQs added yet.</p>
+          )}
         </div>
 
         <Card>
@@ -1652,19 +1647,24 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
         </h4>
         
         <div className="space-y-4 mb-6">
-          {project.quizQuestions.map((quiz) => (
-            <Card key={quiz.id}>
-              <CardContent className="p-4">
-                <h5 className="font-medium text-gray-900">{quiz.question}</h5>
-                <div className="mt-2 space-y-1">
-                  <p className="text-green-600">✓ {quiz.correctAnswer}</p>
-                  {quiz.wrongAnswers.map((answer, index) => (
-                    <p key={index} className="text-gray-600">• {answer}</p>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {project.quizQuestions && project.quizQuestions.length > 0 ? (
+            project.quizQuestions.map((quiz) => (
+              <Card key={quiz.id}>
+                <CardContent className="p-4">
+                  <h5 className="font-medium text-gray-900">{quiz.question}</h5>
+                  <div className="mt-2 space-y-1">
+                    <p className="text-green-600">✓ {quiz.correctAnswer}</p>
+                    <p className="text-gray-600">• {quiz.optionA}</p>
+                    <p className="text-gray-600">• {quiz.optionB}</p>
+                    <p className="text-gray-600">• {quiz.optionC}</p>
+                    <p className="text-gray-600">• {quiz.optionD}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-gray-500 text-center py-4">No quiz questions added yet.</p>
+          )}
         </div>
 
         <Card>
@@ -1713,9 +1713,9 @@ function MarketingTab({ project }: { project: ProjectWithData }) {
   const { toast } = useToast();
 
   const marketingAssetsSchema = z.object({
-    logo: z.string().optional(),
+    logoUrl: z.string().optional(),
     logoStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
-    heroBanner: z.string().optional(),
+    heroBannerUrl: z.string().optional(),
     heroBannerStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
     driveFolder: z.string().optional(),
     driveFolderStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
@@ -1724,9 +1724,9 @@ function MarketingTab({ project }: { project: ProjectWithData }) {
   const form = useForm<z.infer<typeof marketingAssetsSchema>>({
     resolver: zodResolver(marketingAssetsSchema),
     defaultValues: {
-      logo: project.marketingAssets?.logo || "",
+      logoUrl: project.marketingAssets?.logoUrl || "",
       logoStatus: project.marketingAssets?.logoStatus || "not_confirmed",
-      heroBanner: project.marketingAssets?.heroBanner || "",
+      heroBannerUrl: project.marketingAssets?.heroBannerUrl || "",
       heroBannerStatus: project.marketingAssets?.heroBannerStatus || "not_confirmed",
       driveFolder: project.marketingAssets?.driveFolder || "",
       driveFolderStatus: project.marketingAssets?.driveFolderStatus || "not_confirmed",
@@ -1735,10 +1735,7 @@ function MarketingTab({ project }: { project: ProjectWithData }) {
 
   const updateMutation = useMutation({
     mutationFn: async (data: z.infer<typeof marketingAssetsSchema>) => {
-      await apiRequest(`/api/projects/${project.id}/marketing-assets`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      await apiRequest(`/api/projects/${project.id}/marketing-assets`, "PUT", data);
     },
     onSuccess: () => {
       toast({
@@ -1774,8 +1771,8 @@ function MarketingTab({ project }: { project: ProjectWithData }) {
         <form onSubmit={form.handleSubmit((data) => updateMutation.mutate(data))} className="space-y-6">
           <div className="space-y-4">
             {[
-              { name: "logo", label: "Project Logo", icon: Images, description: "Upload or provide URL for project logo" },
-              { name: "heroBanner", label: "Hero Banner", icon: Images, description: "Upload or provide URL for hero banner image" },
+              { name: "logoUrl", label: "Project Logo", icon: Images, description: "Upload or provide URL for project logo" },
+              { name: "heroBannerUrl", label: "Hero Banner", icon: Images, description: "Upload or provide URL for hero banner image" },
               { name: "driveFolder", label: "Marketing Drive Folder", icon: CloudUpload, description: "Google Drive folder containing all marketing assets" },
             ].map((item) => (
               <div key={item.name} className="border rounded-lg p-4">
