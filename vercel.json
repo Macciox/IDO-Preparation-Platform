@@ -20,6 +20,10 @@
       "dest": "/api/supabase-status.js"
     },
     {
+      "src": "/api/simple-check",
+      "dest": "/api/simple-check.js"
+    },
+    {
       "src": "/api/create-tables",
       "dest": "/api/create-tables.js"
     },

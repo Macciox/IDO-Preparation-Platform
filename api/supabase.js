@@ -18,9 +18,10 @@ export const supabase = createClient(supabaseUrl, supabaseServiceKey);
 export async function checkDbConnection() {
   try {
     // Test the connection with a simple query
+    // Using a simpler query that doesn't use count(*)
     const { data, error } = await supabase
       .from('sessions')
-      .select('count(*)')
+      .select('sid')
       .limit(1);
     
     if (error) throw error;
@@ -31,6 +32,24 @@ export async function checkDbConnection() {
     };
   } catch (error) {
     console.error('Supabase connection error:', error);
+    
+    // If the error is about the table not existing, try a simpler query
+    if (error.message && error.message.includes('does not exist')) {
+      try {
+        // Try a system-level query that should always work
+        const { data, error: systemError } = await supabase.rpc('get_system_info');
+        
+        if (!systemError) {
+          return {
+            connected: true,
+            info: 'Connected to Supabase successfully, but sessions table does not exist yet'
+          };
+        }
+      } catch (innerError) {
+        console.error('Secondary connection check failed:', innerError);
+      }
+    }
+    
     return { 
       connected: false, 
       error: error.message || 'Unknown error connecting to Supabase'
