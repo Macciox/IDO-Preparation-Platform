@@ -110,10 +110,57 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     
-    // Initialize empty records for all sections
-    await this.upsertIdoMetrics({ projectId: project.id });
-    await this.upsertPlatformContent({ projectId: project.id });
-    await this.upsertMarketingAssets({ projectId: project.id });
+    // Initialize records with all status fields set to "not_confirmed"
+    await this.upsertIdoMetrics({ 
+      projectId: project.id,
+      // Important Dates
+      whitelistingDateStatus: "not_confirmed",
+      placingIdoDateStatus: "not_confirmed", 
+      claimingDateStatus: "not_confirmed",
+      initialDexListingDateStatus: "not_confirmed",
+      // Token Metrics (6 fields from user specification)
+      totalAllocationDollarsStatus: "not_confirmed",
+      tokenPriceEventStatus: "not_confirmed",
+      totalAllocationNativeTokenStatus: "not_confirmed",
+      availableAtTgeStatus: "not_confirmed",
+      cliffLockStatus: "not_confirmed",
+      vestingDurationStatus: "not_confirmed",
+      // Project Details
+      tokenTickerStatus: "not_confirmed",
+      networkStatus: "not_confirmed",
+      gracePeriodStatus: "not_confirmed",
+      minimumTierStatus: "not_confirmed",
+      transactionIdStatus: "not_confirmed",
+      contractAddressStatus: "not_confirmed",
+      // Token Info
+      initialMarketCapExLiquidityStatus: "not_confirmed",
+      initialMarketCapStatus: "not_confirmed",
+      fullyDilutedMarketCapStatus: "not_confirmed",
+      circulatingSupplyTgeStatus: "not_confirmed",
+      circulatingSupplyTgePercentStatus: "not_confirmed",
+      totalSupplyStatus: "not_confirmed"
+    });
+    
+    await this.upsertPlatformContent({ 
+      projectId: project.id,
+      taglineStatus: "not_confirmed",
+      descriptionStatus: "not_confirmed",
+      twitterUrlStatus: "not_confirmed",
+      telegramUrlStatus: "not_confirmed",
+      discordUrlStatus: "not_confirmed",
+      youtubeUrlStatus: "not_confirmed",
+      linkedinUrlStatus: "not_confirmed",
+      roadmapUrlStatus: "not_confirmed",
+      teamPageUrlStatus: "not_confirmed",
+      tokenomicsUrlStatus: "not_confirmed"
+    });
+    
+    await this.upsertMarketingAssets({ 
+      projectId: project.id,
+      logoStatus: "not_confirmed",
+      heroBannerStatus: "not_confirmed",
+      driveFolderStatus: "not_confirmed"
+    });
     
     return project;
   }
