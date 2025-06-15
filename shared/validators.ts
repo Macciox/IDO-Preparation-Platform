@@ -1,12 +1,11 @@
 import { z } from "zod";
-import { STATUS_ENUM } from "./schema";
 
 // Common validation schemas
-export const statusSchema = z.enum(STATUS_ENUM);
+export const statusSchema = z.enum(["confirmed", "not_confirmed", "might_change"]);
 
 // URL validation with more comprehensive regex
 export const urlSchema = z.string().regex(
-  /^(https?:\/\/)?(www\.)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+  /^(https?:\/\/)?(www\.)?([a-z0-9-]+\.)+[a-z]{2,6}(\/[^\/\s]*)*(\/)?$/i,
   "Invalid URL format"
 ).nullable().optional();
 

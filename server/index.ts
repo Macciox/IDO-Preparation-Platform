@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { config, validateConfig } from "./config";
+import { startNgrok } from "./ngrok";
 
 const app = express();
 app.use(express.json());
@@ -34,7 +35,12 @@ app.use(require('./middleware/requestLogger').requestLogger);
     port,
     host,
     reusePort: true,
-  }, () => {
+  }, async () => {
     log(`serving on ${host}:${port} in ${config.server.env} mode`);
+    
+    // Start ngrok tunnel in development mode
+    if (app.get("env") === "development") {
+      await startNgrok();
+    }
   });
 })();
