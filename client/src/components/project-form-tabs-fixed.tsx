@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -287,8 +287,7 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
       minimumTierStatus: project.idoMetrics?.minimumTierStatus || "not_confirmed",
       gracePeriod: project.idoMetrics?.gracePeriod || "",
       gracePeriodStatus: project.idoMetrics?.gracePeriodStatus || "not_confirmed",
-      tokenTicker: project.idoMetrics?.tokenTicker || "",
-      tokenTickerStatus: project.idoMetrics?.tokenTickerStatus || "not_confirmed",
+
       transactionId: project.idoMetrics?.transactionId || "",
       transactionIdStatus: project.idoMetrics?.transactionIdStatus || "not_confirmed",
       contractAddress: project.idoMetrics?.contractAddress || "",
@@ -1780,7 +1779,15 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
   const [newQuizOptionC, setNewQuizOptionC] = useState("");
   const [newQuizOptionD, setNewQuizOptionD] = useState("");
   const [newQuizCorrectAnswer, setNewQuizCorrectAnswer] = useState("");
+  const [faqDialogOpen, setFaqDialogOpen] = useState(false);
+  const [quizDialogOpen, setQuizDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  // Update local state when project changes
+  useEffect(() => {
+    setFaqs(project.faqs || []);
+    setQuizQuestions(project.quizQuestions || []);
+  }, [project.faqs, project.quizQuestions]);
 
   const addFaq = useMutation({
     mutationFn: async (data: { question: string; answer: string }) => {
@@ -1796,6 +1803,13 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
+      setNewFaqQuestion("");
+      setNewFaqAnswer("");
+      setFaqDialogOpen(false);
+      toast({
+        title: "Success",
+        description: "FAQ added successfully!",
+      });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -1857,6 +1871,17 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects", "first"] });
+      setNewQuizQuestion("");
+      setNewQuizOptionA("");
+      setNewQuizOptionB("");
+      setNewQuizOptionC("");
+      setNewQuizOptionD("");
+      setNewQuizCorrectAnswer("");
+      setQuizDialogOpen(false);
+      toast({
+        title: "Success",
+        description: "Quiz question added successfully!",
+      });
     },
   });
 
