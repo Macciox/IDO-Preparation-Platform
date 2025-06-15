@@ -10,8 +10,8 @@ dotenv.config();
 export const config = {
   // Server settings
   server: {
-    port: parseInt(process.env.PORT || '5000', 10),
-    host: process.env.HOST || '0.0.0.0',
+    port: parseInt(process.env.PORT || '3000', 10),
+    host: process.env.HOST || 'localhost',
     env: process.env.NODE_ENV || 'development',
   },
   
@@ -42,7 +42,6 @@ export function validateConfig() {
   const requiredVars = [
     { key: 'database.url', value: config.database.url },
     { key: 'auth.sessionSecret', value: config.auth.sessionSecret },
-    { key: 'auth.replId', value: config.auth.replId },
   ];
   
   const missing = requiredVars.filter(v => !v.value);

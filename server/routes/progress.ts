@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { storage } from '../storage';
 import { getProjectProgress, getMissingFields } from '../utils/progressTracker';
-import { isAuthenticatedOrDemo } from '../replitAuth';
+import { isAuthenticated } from '../localAuth';
 
 const router = Router();
 
@@ -9,11 +9,11 @@ const router = Router();
  * Get progress statistics for a specific project
  * GET /api/progress/:projectId
  */
-router.get('/:projectId', isAuthenticatedOrDemo, async (req: any, res) => {
+router.get('/:projectId', isAuthenticated, async (req: any, res) => {
   try {
     const projectId = parseInt(req.params.projectId);
     const userId = req.user.claims.sub;
-    const user = await storage.getUser(userId);
+    const user = await storage.getUserById(userId);
     
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -62,11 +62,11 @@ router.get('/:projectId', isAuthenticatedOrDemo, async (req: any, res) => {
  * Force recalculation of progress for a specific project
  * POST /api/progress/:projectId/recalculate
  */
-router.post('/:projectId/recalculate', isAuthenticatedOrDemo, async (req: any, res) => {
+router.post('/:projectId/recalculate', isAuthenticated, async (req: any, res) => {
   try {
     const projectId = parseInt(req.params.projectId);
     const userId = req.user.claims.sub;
-    const user = await storage.getUser(userId);
+    const user = await storage.getUserById(userId);
     
     if (!user) {
       return res.status(404).json({ message: "User not found" });

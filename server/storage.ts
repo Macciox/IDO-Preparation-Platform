@@ -30,8 +30,8 @@ import { eq, desc, and } from "drizzle-orm";
 import { nanoid } from "nanoid";
 
 export interface IStorage {
-  // User operations (mandatory for Replit Auth)
-  getUser(id: string): Promise<User | undefined>;
+  // User operations
+  getUserById(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   
   // Project operations
@@ -40,31 +40,35 @@ export interface IStorage {
   getProjectBySlug(slug: string): Promise<ProjectWithData | undefined>;
   getProjectByAccessToken(token: string): Promise<ProjectWithData | undefined>;
   getAllProjects(): Promise<ProjectWithData[]>;
-  getUserProjects(userId: string): Promise<ProjectWithData[]>;
+  getProjectsByUserId(userId: string): Promise<ProjectWithData[]>;
   updateProject(id: number, updates: Partial<InsertProject>): Promise<Project | undefined>;
   deleteProject(id: number): Promise<boolean>;
   
   // IDO Metrics operations
   upsertIdoMetrics(data: InsertIdoMetrics): Promise<IdoMetrics>;
-  getIdoMetrics(projectId: number): Promise<IdoMetrics | undefined>;
+  getIdoMetricsById(projectId: number): Promise<IdoMetrics | undefined>;
   
   // Platform Content operations
   upsertPlatformContent(data: InsertPlatformContent): Promise<PlatformContent>;
-  getPlatformContent(projectId: number): Promise<PlatformContent | undefined>;
+  getPlatformContentById(projectId: number): Promise<PlatformContent | undefined>;
   
   // FAQ operations
-  upsertFaq(data: InsertFaq): Promise<Faq>;
-  getProjectFaqs(projectId: number): Promise<Faq[]>;
+  createFaq(data: InsertFaq): Promise<Faq>;
+  updateFaq(data: Partial<InsertFaq> & { id: number }): Promise<Faq>;
+  getFaqById(id: number): Promise<Faq | undefined>;
+  getFaqsByProjectId(projectId: number): Promise<Faq[]>;
   deleteFaq(id: number): Promise<boolean>;
   
   // Quiz Question operations
-  upsertQuizQuestion(data: InsertQuizQuestion): Promise<QuizQuestion>;
-  getProjectQuizQuestions(projectId: number): Promise<QuizQuestion[]>;
+  createQuizQuestion(data: InsertQuizQuestion): Promise<QuizQuestion>;
+  updateQuizQuestion(data: Partial<InsertQuizQuestion> & { id: number }): Promise<QuizQuestion>;
+  getQuizQuestionById(id: number): Promise<QuizQuestion | undefined>;
+  getQuizQuestionsByProjectId(projectId: number): Promise<QuizQuestion[]>;
   deleteQuizQuestion(id: number): Promise<boolean>;
   
   // Marketing Assets operations
   upsertMarketingAssets(data: InsertMarketingAssets): Promise<MarketingAssets>;
-  getMarketingAssets(projectId: number): Promise<MarketingAssets | undefined>;
+  getMarketingAssetsById(projectId: number): Promise<MarketingAssets | undefined>;
   
   // Project Whitelist operations
   addToWhitelist(data: InsertProjectWhitelist): Promise<ProjectWhitelist>;
@@ -75,8 +79,8 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  // User operations (mandatory for Replit Auth)
-  async getUser(id: string): Promise<User | undefined> {
+  // User operations
+  async getUserById(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
@@ -271,7 +275,7 @@ export class DatabaseStorage implements IStorage {
     return projectsWithData;
   }
 
-  async getUserProjects(userId: string): Promise<ProjectWithData[]> {
+  async getProjectsByUserId(userId: string): Promise<ProjectWithData[]> {
     // Optimize by using a single query with joins instead of N+1 queries
     const projectsData = await db
       .select({
@@ -333,7 +337,7 @@ export class DatabaseStorage implements IStorage {
   // IDO Metrics operations
   async upsertIdoMetrics(data: InsertIdoMetrics): Promise<IdoMetrics> {
     // Check if record exists
-    const existing = await this.getIdoMetrics(data.projectId);
+    const existing = await this.getIdoMetricsById(data.projectId);
     
     if (existing) {
       // Update existing record
@@ -353,7 +357,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async getIdoMetrics(projectId: number): Promise<IdoMetrics | undefined> {
+  async getIdoMetricsById(projectId: number): Promise<IdoMetrics | undefined> {
     const [result] = await db
       .select()
       .from(idoMetrics)
@@ -364,7 +368,7 @@ export class DatabaseStorage implements IStorage {
   // Platform Content operations
   async upsertPlatformContent(data: InsertPlatformContent): Promise<PlatformContent> {
     // Check if record exists
-    const existing = await this.getPlatformContent(data.projectId);
+    const existing = await this.getPlatformContentById(data.projectId);
     
     if (existing) {
       // Update existing record
@@ -384,7 +388,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async getPlatformContent(projectId: number): Promise<PlatformContent | undefined> {
+  async getPlatformContentById(projectId: number): Promise<PlatformContent | undefined> {
     const [result] = await db
       .select()
       .from(platformContent)
@@ -393,24 +397,32 @@ export class DatabaseStorage implements IStorage {
   }
   
   // FAQ operations
-  async upsertFaq(data: InsertFaq): Promise<Faq> {
-    if (data.id) {
-      const [result] = await db
-        .update(faqs)
-        .set({ ...data, updatedAt: new Date() })
-        .where(eq(faqs.id, data.id))
-        .returning();
-      return result;
-    } else {
-      const [result] = await db
-        .insert(faqs)
-        .values(data)
-        .returning();
-      return result;
-    }
+  async createFaq(data: InsertFaq): Promise<Faq> {
+    const [result] = await db
+      .insert(faqs)
+      .values(data)
+      .returning();
+    return result;
   }
 
-  async getProjectFaqs(projectId: number): Promise<Faq[]> {
+  async updateFaq(data: Partial<InsertFaq> & { id: number }): Promise<Faq> {
+    const [result] = await db
+      .update(faqs)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(faqs.id, data.id))
+      .returning();
+    return result;
+  }
+
+  async getFaqById(id: number): Promise<Faq | undefined> {
+    const [result] = await db
+      .select()
+      .from(faqs)
+      .where(eq(faqs.id, id));
+    return result;
+  }
+
+  async getFaqsByProjectId(projectId: number): Promise<Faq[]> {
     return db
       .select()
       .from(faqs)
@@ -424,24 +436,32 @@ export class DatabaseStorage implements IStorage {
   }
   
   // Quiz Question operations
-  async upsertQuizQuestion(data: InsertQuizQuestion): Promise<QuizQuestion> {
-    if (data.id) {
-      const [result] = await db
-        .update(quizQuestions)
-        .set({ ...data, updatedAt: new Date() })
-        .where(eq(quizQuestions.id, data.id))
-        .returning();
-      return result;
-    } else {
-      const [result] = await db
-        .insert(quizQuestions)
-        .values(data)
-        .returning();
-      return result;
-    }
+  async createQuizQuestion(data: InsertQuizQuestion): Promise<QuizQuestion> {
+    const [result] = await db
+      .insert(quizQuestions)
+      .values(data)
+      .returning();
+    return result;
   }
 
-  async getProjectQuizQuestions(projectId: number): Promise<QuizQuestion[]> {
+  async updateQuizQuestion(data: Partial<InsertQuizQuestion> & { id: number }): Promise<QuizQuestion> {
+    const [result] = await db
+      .update(quizQuestions)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(quizQuestions.id, data.id))
+      .returning();
+    return result;
+  }
+
+  async getQuizQuestionById(id: number): Promise<QuizQuestion | undefined> {
+    const [result] = await db
+      .select()
+      .from(quizQuestions)
+      .where(eq(quizQuestions.id, id));
+    return result;
+  }
+
+  async getQuizQuestionsByProjectId(projectId: number): Promise<QuizQuestion[]> {
     return db
       .select()
       .from(quizQuestions)
@@ -457,7 +477,7 @@ export class DatabaseStorage implements IStorage {
   // Marketing Assets operations
   async upsertMarketingAssets(data: InsertMarketingAssets): Promise<MarketingAssets> {
     // Check if record exists
-    const existing = await this.getMarketingAssets(data.projectId);
+    const existing = await this.getMarketingAssetsById(data.projectId);
     
     if (existing) {
       // Update existing record
@@ -477,7 +497,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async getMarketingAssets(projectId: number): Promise<MarketingAssets | undefined> {
+  async getMarketingAssetsById(projectId: number): Promise<MarketingAssets | undefined> {
     const [result] = await db
       .select()
       .from(marketingAssets)
