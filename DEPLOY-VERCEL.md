@@ -6,7 +6,7 @@ This guide provides updated instructions for deploying the IDO Preparation Platf
 
 1. A [Vercel account](https://vercel.com/signup)
 2. Your code pushed to a Git repository (GitHub, GitLab, or Bitbucket)
-3. A Supabase PostgreSQL database (see [VERCEL-DB-SETUP.md](./VERCEL-DB-SETUP.md) for setup instructions)
+3. A Supabase PostgreSQL database (see [SUPABASE-SETUP.md](./SUPABASE-SETUP.md) for setup instructions)
 
 ## Deployment Steps
 
@@ -25,7 +25,9 @@ This guide provides updated instructions for deploying the IDO Preparation Platf
 ### 2. Configure Environment Variables
 
 Add these environment variables in the Vercel project settings:
-- `DATABASE_URL`: Your Supabase PostgreSQL connection string
+- `SUPABASE_URL`: Your Supabase project URL (https://hugfcugkzxrjnbucxcik.supabase.co)
+- `SERVICE_KEY`: Your Supabase service role key (for server-side operations)
+- `SUPABASE_KEY`: Your Supabase anon/public key (for client-side operations)
 - `SESSION_SECRET`: A secure random string for session encryption
 - `NODE_ENV`: Set to "production"
 
@@ -33,9 +35,16 @@ Add these environment variables in the Vercel project settings:
 
 Click "Deploy" and wait for the build to complete.
 
+### 4. Initialize Database
+
+After deployment:
+1. Visit your deployed application
+2. Click "Check Supabase Status" to verify the connection
+3. Click "Initialize Database Tables" to create the required database tables
+
 ## Database Setup
 
-For detailed instructions on setting up your database with Vercel, see [VERCEL-DB-SETUP.md](./VERCEL-DB-SETUP.md).
+For detailed instructions on setting up your database with Supabase, see [SUPABASE-SETUP.md](./SUPABASE-SETUP.md).
 
 ## Troubleshooting
 
@@ -44,34 +53,32 @@ For detailed instructions on setting up your database with Vercel, see [VERCEL-D
 1. **Build Errors**: Updated build command to use `npm run vercel-build`
 2. **Configuration**: Updated vercel.json with proper builds and routes
 3. **Static Files**: Added index.html as a static landing page
-4. **Database Connection**: Added specialized database connection handling for serverless functions
+4. **Database Connection**: Switched to Supabase client for better serverless compatibility
 5. **API Routes**: Added proper API routes for Vercel serverless functions
 
 ### Checking Database Connection
 
-After deployment, you can check if your database is connected by visiting:
-```
-https://your-vercel-domain.vercel.app/api/db-status
-```
+After deployment, you can check if your database is connected by visiting your application and clicking "Check Supabase Status".
 
 If the database is properly connected, you should see a response like:
 ```json
 {
   "status": "online",
   "database": {
-    "connected": true
+    "connected": true,
+    "info": "Connected to Supabase successfully"
   },
   "timestamp": "2023-06-01T12:34:56.789Z"
 }
 ```
 
-### Handling Warnings
+### Common Issues
 
-Some warnings you might see during deployment are harmless:
+1. **Connection Errors**: If you see connection errors, verify your Supabase URL and API keys in the environment variables.
 
-1. **Deprecated packages warnings**: Messages about `@esbuild-kit/esm-loader` and `@esbuild-kit/core-utils` being merged into tsx are informational only and don't affect functionality.
+2. **Missing Tables**: If your application can't find database tables, use the "Initialize Database Tables" button to create them.
 
-2. **Duplicate key warnings**: These have been fixed by removing duplicate entries in package.json.
+3. **"Warning: Due to `builds` existing in your configuration file..."**: This warning is normal and can be safely ignored.
 
 ## Monitoring
 

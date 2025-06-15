@@ -75,8 +75,8 @@
     
     <div class="button-container">
       <a href="/api/hello" class="button" id="apiButton">Check API Status</a>
-      <a href="/api/db-status" class="button" id="dbButton">Check Database Status</a>
-      <a href="/api/init-db" class="button" id="initDbButton">Initialize Database</a>
+      <a href="/api/supabase-status" class="button" id="supabaseButton">Check Supabase Status</a>
+      <a href="/api/create-tables" class="button" id="createTablesButton">Initialize Database Tables</a>
     </div>
     
     <div class="status" id="statusContainer">
@@ -88,8 +88,8 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const apiButton = document.getElementById('apiButton');
-      const dbButton = document.getElementById('dbButton');
-      const initDbButton = document.getElementById('initDbButton');
+      const supabaseButton = document.getElementById('supabaseButton');
+      const createTablesButton = document.getElementById('createTablesButton');
       const statusContainer = document.getElementById('statusContainer');
       const statusOutput = document.getElementById('statusOutput');
       
@@ -113,14 +113,14 @@
         checkStatus('/api/hello');
       });
       
-      dbButton.addEventListener('click', function(e) {
+      supabaseButton.addEventListener('click', function(e) {
         e.preventDefault();
-        checkStatus('/api/db-status');
+        checkStatus('/api/supabase-status');
       });
       
-      initDbButton.addEventListener('click', function(e) {
+      createTablesButton.addEventListener('click', function(e) {
         e.preventDefault();
-        checkStatus('/api/init-db');
+        checkStatus('/api/create-tables');
       });
     });
   </script>

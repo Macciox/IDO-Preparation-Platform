@@ -16,6 +16,14 @@
       "dest": "/api/db-status.js"
     },
     {
+      "src": "/api/supabase-status",
+      "dest": "/api/supabase-status.js"
+    },
+    {
+      "src": "/api/create-tables",
+      "dest": "/api/create-tables.js"
+    },
+    {
       "src": "/api/init-db",
       "dest": "/api/init-db.js"
     },
