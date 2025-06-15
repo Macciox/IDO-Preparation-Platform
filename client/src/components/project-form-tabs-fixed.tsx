@@ -220,6 +220,10 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
     initialDexListingDateStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
     
     // Token Economics
+    idoPrice: z.string().optional(),
+    idoPriceStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    tokensForSale: z.string().optional(),
+    tokensForSaleStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
     tokenPrice: z.string().optional(),
     tokenPriceStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
     totalAllocationDollars: z.string().optional(),
@@ -230,6 +234,10 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
     cliffPeriodStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
     tgePercentage: z.number().optional(),
     tgePercentageStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    availableAtTge: z.string().optional(),
+    availableAtTgeStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    cliffLock: z.string().optional(),
+    cliffLockStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
     
     // Additional Details
     totalAllocationNativeToken: z.string().optional(),
@@ -269,6 +277,10 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
       claimingDateStatus: project.idoMetrics?.claimingDateStatus || "not_confirmed",
       initialDexListingDate: project.idoMetrics?.initialDexListingDate || "",
       initialDexListingDateStatus: project.idoMetrics?.initialDexListingDateStatus || "not_confirmed",
+      idoPrice: project.idoMetrics?.idoPrice || "",
+      idoPriceStatus: project.idoMetrics?.idoPriceStatus || "not_confirmed",
+      tokensForSale: project.idoMetrics?.tokensForSale || "",
+      tokensForSaleStatus: project.idoMetrics?.tokensForSaleStatus || "not_confirmed",
       tokenPrice: project.idoMetrics?.tokenPrice || "",
       tokenPriceStatus: project.idoMetrics?.tokenPriceStatus || "not_confirmed",
       totalAllocationDollars: project.idoMetrics?.totalAllocationDollars || "",
@@ -279,6 +291,10 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
       cliffPeriodStatus: project.idoMetrics?.cliffPeriodStatus || "not_confirmed",
       tgePercentage: project.idoMetrics?.tgePercentage || undefined,
       tgePercentageStatus: project.idoMetrics?.tgePercentageStatus || "not_confirmed",
+      availableAtTge: project.idoMetrics?.availableAtTge || "",
+      availableAtTgeStatus: project.idoMetrics?.availableAtTgeStatus || "not_confirmed",
+      cliffLock: project.idoMetrics?.cliffLock || "",
+      cliffLockStatus: project.idoMetrics?.cliffLockStatus || "not_confirmed",
       totalAllocationNativeToken: project.idoMetrics?.totalAllocationNativeToken || "",
       totalAllocationNativeTokenStatus: project.idoMetrics?.totalAllocationNativeTokenStatus || "not_confirmed",
       network: project.idoMetrics?.network || "",
@@ -521,12 +537,92 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                 <div className="flex space-x-3">
                   <FormField
                     control={form.control}
-                    name="tokenPrice"
+                    name="idoPrice"
                     render={({ field }) => (
                       <FormItem className="flex-1">
                         <FormLabel>IDO Price</FormLabel>
                         <FormControl>
                           <Input placeholder="$0.05" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="idoPriceStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="tokensForSale"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Tokens for Sale</FormLabel>
+                        <FormControl>
+                          <Input placeholder="1,000,000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tokensForSaleStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="tokenPrice"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Token Price</FormLabel>
+                        <FormControl>
+                          <Input placeholder="$0.10" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -702,6 +798,86 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                   <FormField
                     control={form.control}
                     name="tgePercentageStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="availableAtTge"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Available at TGE</FormLabel>
+                        <FormControl>
+                          <Input placeholder="500,000 TOKENS" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="availableAtTgeStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="cliffLock"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Cliff Lock</FormLabel>
+                        <FormControl>
+                          <Input placeholder="6 months" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="cliffLockStatus"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>
