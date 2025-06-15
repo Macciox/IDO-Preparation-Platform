@@ -74,7 +74,7 @@ export default function ProjectDashboard() {
     let total = 0;
     let completed = 0;
 
-    // IDO Metrics Tab - 25 campi obbligatori (tutti i campi dalla lista specifica)
+    // IDO Metrics: 22 fields (4 Important Dates + 6 Token Metrics + 6 Project Details + 6 Token Info)
     const metrics = project.idoMetrics;
     if (metrics) {
       const fields = [
@@ -83,16 +83,12 @@ export default function ProjectDashboard() {
         metrics.placingIdoDateStatus,
         metrics.claimingDateStatus,
         metrics.initialDexListingDateStatus,
-        // Token Economics (8 fields)
-        metrics.idoPriceStatus,
-        metrics.tokensForSaleStatus,
+        // Token Metrics (6 fields)
         metrics.totalAllocationDollarsStatus,
         metrics.tokenPriceEventStatus,
-        metrics.tokenPriceStatus,
         metrics.totalAllocationNativeTokenStatus,
         metrics.availableAtTgeStatus,
         metrics.cliffLockStatus,
-        metrics.vestingPeriodStatus,
         metrics.vestingDurationStatus,
         // Project Details (6 fields)
         metrics.tokenTickerStatus,
@@ -101,7 +97,7 @@ export default function ProjectDashboard() {
         metrics.minimumTierStatus,
         metrics.transactionIdStatus, // Token Transfer TX-ID
         metrics.contractAddressStatus,
-        // Token Info (7 fields)
+        // Token Info (6 fields)
         metrics.initialMarketCapExLiquidityStatus,
         metrics.initialMarketCapStatus,
         metrics.fullyDilutedMarketCapStatus,
