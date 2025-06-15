@@ -15,9 +15,9 @@ This guide provides updated instructions for deploying the IDO Preparation Platf
 2. Click "Add New" > "Project"
 3. Import your Git repository
 4. Configure the project settings:
-   - Framework Preset: Vite
+   - Framework Preset: Other
    - Root Directory: ./
-   - Build Command: `npm run build`
+   - Build Command: `npx vite build`
    - Output Directory: `dist`
    - Install Command: `npm install`
 
@@ -37,8 +37,8 @@ Click "Deploy" and wait for the build to complete.
 ### Fixed Issues
 
 1. **Duplicate Dependencies**: Removed duplicate `passport-local` entry in package.json
-2. **Vercel Configuration**: Simplified vercel.json to use rewrites only
-3. **API Handler**: Updated with proper CORS headers
+2. **Vercel Configuration**: Updated vercel.json with explicit build command
+3. **Build Command**: Changed from `vite build` to `npx vite build` to ensure Vite is found
 
 ### If You Still See Code Instead of the App
 
