@@ -17,7 +17,7 @@ This guide provides updated instructions for deploying the IDO Preparation Platf
 4. Configure the project settings:
    - Framework Preset: Other
    - Root Directory: ./
-   - Build Command: `npx vite build`
+   - Build Command: `npm install vite @vitejs/plugin-react && npx vite build`
    - Output Directory: `dist`
    - Install Command: `npm install`
 
@@ -37,8 +37,9 @@ Click "Deploy" and wait for the build to complete.
 ### Fixed Issues
 
 1. **Duplicate Dependencies**: Removed duplicate `passport-local` entry in package.json
-2. **Vercel Configuration**: Updated vercel.json with explicit build command
-3. **Build Command**: Changed from `vite build` to `npx vite build` to ensure Vite is found
+2. **Vite Not Found**: Added Vite as a direct dependency in package.json
+3. **Build Command**: Updated to explicitly install Vite before building
+4. **Configuration**: Added simplified vite.config.js file
 
 ### If You Still See Code Instead of the App
 
