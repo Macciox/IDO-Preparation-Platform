@@ -1320,3 +1320,519 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
     </div>
   );
 }
+
+// Platform Content Tab Component
+function PlatformContentTab({ project }: { project: ProjectWithData }) {
+  const { toast } = useToast();
+
+  const platformContentSchema = z.object({
+    tagline: z.string().optional(),
+    taglineStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    description: z.string().optional(),
+    descriptionStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    twitterUrl: z.string().optional(),
+    twitterUrlStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    telegramUrl: z.string().optional(),
+    telegramUrlStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    discordUrl: z.string().optional(),
+    discordUrlStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    youtubeUrl: z.string().optional(),
+    youtubeUrlStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    linkedinUrl: z.string().optional(),
+    linkedinUrlStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    roadmapUrl: z.string().optional(),
+    roadmapUrlStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    teamPageUrl: z.string().optional(),
+    teamPageUrlStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    tokenomicsUrl: z.string().optional(),
+    tokenomicsUrlStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  });
+
+  const form = useForm<z.infer<typeof platformContentSchema>>({
+    resolver: zodResolver(platformContentSchema),
+    defaultValues: {
+      tagline: project.platformContent?.tagline || "",
+      taglineStatus: project.platformContent?.taglineStatus || "not_confirmed",
+      description: project.platformContent?.description || "",
+      descriptionStatus: project.platformContent?.descriptionStatus || "not_confirmed",
+      twitterUrl: project.platformContent?.twitterUrl || "",
+      twitterUrlStatus: project.platformContent?.twitterUrlStatus || "not_confirmed",
+      telegramUrl: project.platformContent?.telegramUrl || "",
+      telegramUrlStatus: project.platformContent?.telegramUrlStatus || "not_confirmed",
+      discordUrl: project.platformContent?.discordUrl || "",
+      discordUrlStatus: project.platformContent?.discordUrlStatus || "not_confirmed",
+      youtubeUrl: project.platformContent?.youtubeUrl || "",
+      youtubeUrlStatus: project.platformContent?.youtubeUrlStatus || "not_confirmed",
+      linkedinUrl: project.platformContent?.linkedinUrl || "",
+      linkedinUrlStatus: project.platformContent?.linkedinUrlStatus || "not_confirmed",
+      roadmapUrl: project.platformContent?.roadmapUrl || "",
+      roadmapUrlStatus: project.platformContent?.roadmapUrlStatus || "not_confirmed",
+      teamPageUrl: project.platformContent?.teamPageUrl || "",
+      teamPageUrlStatus: project.platformContent?.teamPageUrlStatus || "not_confirmed",
+      tokenomicsUrl: project.platformContent?.tokenomicsUrl || "",
+      tokenomicsUrlStatus: project.platformContent?.tokenomicsUrlStatus || "not_confirmed",
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof platformContentSchema>) => {
+      await apiRequest(`/api/projects/${project.id}/platform-content`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Platform content updated successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to update platform content. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  return (
+    <div>
+      <h3 className="text-lg font-semibold text-gray-900 mb-6">Platform Content</h3>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit((data) => updateMutation.mutate(data))} className="space-y-6">
+          <div className="space-y-4">
+            <div className="flex space-x-3">
+              <FormField
+                control={form.control}
+                name="tagline"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Project Tagline</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter project tagline..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="taglineStatus"
+                render={({ field }) => (
+                  <FormItem className="w-40">
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statusOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="flex space-x-3">
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Project Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter project description..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="descriptionStatus"
+                render={({ field }) => (
+                  <FormItem className="w-40">
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statusOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {[
+              { name: "twitterUrl", label: "Twitter URL", icon: Twitter },
+              { name: "telegramUrl", label: "Telegram URL", icon: MessageSquare },
+              { name: "discordUrl", label: "Discord URL", icon: MessageSquare },
+              { name: "youtubeUrl", label: "YouTube URL", icon: ExternalLink },
+              { name: "linkedinUrl", label: "LinkedIn URL", icon: ExternalLink },
+              { name: "roadmapUrl", label: "Roadmap URL", icon: ExternalLink },
+              { name: "teamPageUrl", label: "Team Page URL", icon: ExternalLink },
+              { name: "tokenomicsUrl", label: "Tokenomics URL", icon: ExternalLink },
+            ].map((item) => (
+              <div key={item.name} className="flex space-x-3">
+                <FormField
+                  control={form.control}
+                  name={item.name as any}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel className="flex items-center space-x-2">
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.label}</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder={`Enter ${item.label.toLowerCase()}...`} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`${item.name}Status` as any}
+                  render={({ field }) => (
+                    <FormItem className="w-40">
+                      <FormLabel>Status</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-end space-x-4">
+            <Button type="submit" disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? "Saving..." : "Save Platform Content"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+}
+
+// FAQ & L2E Tab Component
+function FaqsTab({ project }: { project: ProjectWithData }) {
+  const { toast } = useToast();
+  const [newFaq, setNewFaq] = useState({ question: "", answer: "" });
+  const [newQuiz, setNewQuiz] = useState({ question: "", correctAnswer: "", wrongAnswers: ["", "", ""] });
+
+  const addFaqMutation = useMutation({
+    mutationFn: async (data: { question: string; answer: string }) => {
+      await apiRequest(`/api/projects/${project.id}/faqs`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "FAQ added successfully!",
+      });
+      setNewFaq({ question: "", answer: "" });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+    },
+  });
+
+  const addQuizMutation = useMutation({
+    mutationFn: async (data: { question: string; correctAnswer: string; wrongAnswers: string[] }) => {
+      await apiRequest(`/api/projects/${project.id}/quiz-questions`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Quiz question added successfully!",
+      });
+      setNewQuiz({ question: "", correctAnswer: "", wrongAnswers: ["", "", ""] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+    },
+  });
+
+  return (
+    <div className="space-y-8">
+      <h3 className="text-lg font-semibold text-gray-900 mb-6">FAQ & Learn-to-Earn Questions</h3>
+      
+      <div>
+        <h4 className="text-md font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+          Frequently Asked Questions
+        </h4>
+        
+        <div className="space-y-4 mb-6">
+          {project.faqs.map((faq) => (
+            <Card key={faq.id}>
+              <CardContent className="p-4">
+                <h5 className="font-medium text-gray-900">{faq.question}</h5>
+                <p className="text-gray-700 mt-2">{faq.answer}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card>
+          <CardContent className="p-4">
+            <h5 className="font-medium text-gray-900 mb-4">Add New FAQ</h5>
+            <div className="space-y-4">
+              <Input
+                placeholder="Enter question..."
+                value={newFaq.question}
+                onChange={(e) => setNewFaq({ ...newFaq, question: e.target.value })}
+              />
+              <Textarea
+                placeholder="Enter answer..."
+                value={newFaq.answer}
+                onChange={(e) => setNewFaq({ ...newFaq, answer: e.target.value })}
+              />
+              <Button
+                onClick={() => addFaqMutation.mutate(newFaq)}
+                disabled={!newFaq.question || !newFaq.answer || addFaqMutation.isPending}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {addFaqMutation.isPending ? "Adding..." : "Add FAQ"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div>
+        <h4 className="text-md font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+          Learn-to-Earn Quiz Questions
+        </h4>
+        
+        <div className="space-y-4 mb-6">
+          {project.quizQuestions.map((quiz) => (
+            <Card key={quiz.id}>
+              <CardContent className="p-4">
+                <h5 className="font-medium text-gray-900">{quiz.question}</h5>
+                <div className="mt-2 space-y-1">
+                  <p className="text-green-600">✓ {quiz.correctAnswer}</p>
+                  {quiz.wrongAnswers.map((answer, index) => (
+                    <p key={index} className="text-gray-600">• {answer}</p>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card>
+          <CardContent className="p-4">
+            <h5 className="font-medium text-gray-900 mb-4">Add New Quiz Question</h5>
+            <div className="space-y-4">
+              <Input
+                placeholder="Enter question..."
+                value={newQuiz.question}
+                onChange={(e) => setNewQuiz({ ...newQuiz, question: e.target.value })}
+              />
+              <Input
+                placeholder="Correct answer..."
+                value={newQuiz.correctAnswer}
+                onChange={(e) => setNewQuiz({ ...newQuiz, correctAnswer: e.target.value })}
+              />
+              {newQuiz.wrongAnswers.map((wrong, index) => (
+                <Input
+                  key={index}
+                  placeholder={`Wrong answer ${index + 1}...`}
+                  value={wrong}
+                  onChange={(e) => {
+                    const updated = [...newQuiz.wrongAnswers];
+                    updated[index] = e.target.value;
+                    setNewQuiz({ ...newQuiz, wrongAnswers: updated });
+                  }}
+                />
+              ))}
+              <Button
+                onClick={() => addQuizMutation.mutate(newQuiz)}
+                disabled={!newQuiz.question || !newQuiz.correctAnswer || addQuizMutation.isPending}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {addQuizMutation.isPending ? "Adding..." : "Add Quiz Question"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// Marketing Assets Tab Component
+function MarketingTab({ project }: { project: ProjectWithData }) {
+  const { toast } = useToast();
+
+  const marketingAssetsSchema = z.object({
+    logo: z.string().optional(),
+    logoStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    heroBanner: z.string().optional(),
+    heroBannerStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+    driveFolder: z.string().optional(),
+    driveFolderStatus: z.enum(["confirmed", "not_confirmed", "might_change"]).default("not_confirmed"),
+  });
+
+  const form = useForm<z.infer<typeof marketingAssetsSchema>>({
+    resolver: zodResolver(marketingAssetsSchema),
+    defaultValues: {
+      logo: project.marketingAssets?.logo || "",
+      logoStatus: project.marketingAssets?.logoStatus || "not_confirmed",
+      heroBanner: project.marketingAssets?.heroBanner || "",
+      heroBannerStatus: project.marketingAssets?.heroBannerStatus || "not_confirmed",
+      driveFolder: project.marketingAssets?.driveFolder || "",
+      driveFolderStatus: project.marketingAssets?.driveFolderStatus || "not_confirmed",
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof marketingAssetsSchema>) => {
+      await apiRequest(`/api/projects/${project.id}/marketing-assets`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Marketing assets updated successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to update marketing assets. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  return (
+    <div>
+      <h3 className="text-lg font-semibold text-gray-900 mb-6">Marketing Assets</h3>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit((data) => updateMutation.mutate(data))} className="space-y-6">
+          <div className="space-y-4">
+            {[
+              { name: "logo", label: "Project Logo", icon: Images, description: "Upload or provide URL for project logo" },
+              { name: "heroBanner", label: "Hero Banner", icon: Images, description: "Upload or provide URL for hero banner image" },
+              { name: "driveFolder", label: "Marketing Drive Folder", icon: CloudUpload, description: "Google Drive folder containing all marketing assets" },
+            ].map((item) => (
+              <div key={item.name} className="border rounded-lg p-4">
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name={item.name as any}
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel className="flex items-center space-x-2">
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.label}</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder={`Enter ${item.label.toLowerCase()}...`} {...field} />
+                        </FormControl>
+                        <p className="text-sm text-gray-500">{item.description}</p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`${item.name}Status` as any}
+                    render={({ field }) => (
+                      <FormItem className="w-40">
+                        <FormLabel>Status</FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {statusOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-end space-x-4">
+            <Button type="submit" disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? "Saving..." : "Save Marketing Assets"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+}
