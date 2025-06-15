@@ -1376,7 +1376,7 @@ function PlatformContentTab({ project }: { project: ProjectWithData }) {
 
   const updateMutation = useMutation({
     mutationFn: async (data: z.infer<typeof platformContentSchema>) => {
-      await apiRequest(`/api/projects/${project.id}/platform-content`, "PUT", data);
+      await apiRequest("PUT", `/api/projects/${project.id}/platform-content`, data);
     },
     onSuccess: () => {
       toast({
@@ -1565,7 +1565,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const addFaqMutation = useMutation({
     mutationFn: async (data: { question: string; answer: string }) => {
-      await apiRequest(`/api/projects/${project.id}/faqs`, "POST", data);
+      await apiRequest("POST", `/api/projects/${project.id}/faqs`, data);
     },
     onSuccess: () => {
       toast({
@@ -1579,7 +1579,7 @@ function FaqsTab({ project }: { project: ProjectWithData }) {
 
   const addQuizMutation = useMutation({
     mutationFn: async (data: { question: string; correctAnswer: string; wrongAnswers: string[] }) => {
-      await apiRequest(`/api/projects/${project.id}/quiz-questions`, "POST", data);
+      await apiRequest("POST", `/api/projects/${project.id}/quiz-questions`, data);
     },
     onSuccess: () => {
       toast({
@@ -1735,7 +1735,7 @@ function MarketingTab({ project }: { project: ProjectWithData }) {
 
   const updateMutation = useMutation({
     mutationFn: async (data: z.infer<typeof marketingAssetsSchema>) => {
-      await apiRequest(`/api/projects/${project.id}/marketing-assets`, "PUT", data);
+      await apiRequest("PUT", `/api/projects/${project.id}/marketing-assets`, data);
     },
     onSuccess: () => {
       toast({
