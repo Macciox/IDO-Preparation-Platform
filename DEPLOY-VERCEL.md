@@ -17,8 +17,8 @@ This guide provides updated instructions for deploying the IDO Preparation Platf
 4. Configure the project settings:
    - Framework Preset: Other
    - Root Directory: ./
-   - Build Command: `npm install vite @vitejs/plugin-react && npx vite build`
-   - Output Directory: `dist`
+   - Build Command: (leave empty)
+   - Output Directory: ./
    - Install Command: `npm install`
 
 ### 2. Configure Environment Variables
@@ -36,26 +36,26 @@ Click "Deploy" and wait for the build to complete.
 
 ### Fixed Issues
 
-1. **Duplicate Dependencies**: Removed duplicate `passport-local` entry in package.json
-2. **Vite Not Found**: Added Vite as a direct dependency in package.json
-3. **Build Command**: Updated to explicitly install Vite before building
-4. **Configuration**: Added simplified vite.config.js file
+1. **Build Errors**: Simplified deployment by using static HTML instead of build process
+2. **Configuration**: Updated vercel.json with simple rewrites
+3. **Static Files**: Added index.html as a static landing page
 
-### If You Still See Code Instead of the App
+### Next Steps After Deployment
 
-If you still see code instead of the application after deployment:
+Once the static version is deployed successfully:
 
-1. Check that the build completed successfully in Vercel logs
-2. Verify that the Output Directory is set to `dist`
-3. Make sure your `index.html` is being properly served
+1. Set up a proper build pipeline using a CI/CD service like GitHub Actions
+2. Build the frontend separately and deploy the built files to Vercel
+3. Deploy the backend API to a service like Render, Railway, or Fly.io
 
-## Testing Your Deployment
+## Alternative Deployment Options
 
-After deployment, test these features:
-1. Frontend loads correctly (no code showing)
-2. API endpoints respond properly
-3. Authentication works
-4. Project data displays correctly
+If Vercel continues to have issues with the build process, consider:
+
+1. **Netlify**: Similar to Vercel but with different build processes
+2. **GitHub Pages**: For static frontend only
+3. **Render**: Can handle both frontend and backend
+4. **Railway**: Good for full-stack applications
 
 ## Monitoring
 
