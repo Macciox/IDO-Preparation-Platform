@@ -74,7 +74,7 @@ export default function ProjectDashboard() {
     let total = 0;
     let completed = 0;
 
-    // IDO Metrics Tab - 19 campi obbligatori (transactionId escluso)
+    // IDO Metrics Tab - 22 campi obbligatori (transactionId escluso)
     const metrics = project.idoMetrics;
     if (metrics) {
       const fields = [
@@ -97,6 +97,9 @@ export default function ProjectDashboard() {
         metrics.gracePeriodStatus,
         metrics.contractAddressStatus,
         metrics.initialMarketCapStatus,
+        metrics.fullyDilutedMarketCapStatus,
+        metrics.circulatingSupplyTgeStatus,
+        metrics.totalSupplyStatus,
         // transactionIdStatus escluso (opzionale)
       ];
       total += fields.length;
@@ -150,7 +153,7 @@ export default function ProjectDashboard() {
       assets: 0,
     };
 
-    // IDO Metrics - 19 campi obbligatori (transactionId escluso)
+    // IDO Metrics - 22 campi obbligatori (transactionId escluso)
     if (project.idoMetrics) {
       const fields = [
         project.idoMetrics.whitelistingDateStatus,
@@ -172,6 +175,9 @@ export default function ProjectDashboard() {
         project.idoMetrics.gracePeriodStatus,
         project.idoMetrics.contractAddressStatus,
         project.idoMetrics.initialMarketCapStatus,
+        project.idoMetrics.fullyDilutedMarketCapStatus,
+        project.idoMetrics.circulatingSupplyTgeStatus,
+        project.idoMetrics.totalSupplyStatus,
         // transactionIdStatus escluso (opzionale)
       ];
       sections.metrics = Math.round((fields.filter(s => s === "confirmed").length / fields.length) * 100);
