@@ -6,6 +6,7 @@ This guide provides updated instructions for deploying the IDO Preparation Platf
 
 1. A [Vercel account](https://vercel.com/signup)
 2. Your code pushed to a Git repository (GitHub, GitLab, or Bitbucket)
+3. A Supabase PostgreSQL database (see [VERCEL-DB-SETUP.md](./VERCEL-DB-SETUP.md) for setup instructions)
 
 ## Deployment Steps
 
@@ -17,8 +18,8 @@ This guide provides updated instructions for deploying the IDO Preparation Platf
 4. Configure the project settings:
    - Framework Preset: Other
    - Root Directory: ./
-   - Build Command: (leave empty)
-   - Output Directory: ./
+   - Build Command: `npm run vercel-build`
+   - Output Directory: dist
    - Install Command: `npm install`
 
 ### 2. Configure Environment Variables
@@ -32,30 +33,45 @@ Add these environment variables in the Vercel project settings:
 
 Click "Deploy" and wait for the build to complete.
 
+## Database Setup
+
+For detailed instructions on setting up your database with Vercel, see [VERCEL-DB-SETUP.md](./VERCEL-DB-SETUP.md).
+
 ## Troubleshooting
 
 ### Fixed Issues
 
-1. **Build Errors**: Simplified deployment by using static HTML instead of build process
-2. **Configuration**: Updated vercel.json with simple rewrites
+1. **Build Errors**: Updated build command to use `npm run vercel-build`
+2. **Configuration**: Updated vercel.json with proper builds and routes
 3. **Static Files**: Added index.html as a static landing page
+4. **Database Connection**: Added specialized database connection handling for serverless functions
+5. **API Routes**: Added proper API routes for Vercel serverless functions
 
-### Next Steps After Deployment
+### Checking Database Connection
 
-Once the static version is deployed successfully:
+After deployment, you can check if your database is connected by visiting:
+```
+https://your-vercel-domain.vercel.app/api/db-status
+```
 
-1. Set up a proper build pipeline using a CI/CD service like GitHub Actions
-2. Build the frontend separately and deploy the built files to Vercel
-3. Deploy the backend API to a service like Render, Railway, or Fly.io
+If the database is properly connected, you should see a response like:
+```json
+{
+  "status": "online",
+  "database": {
+    "connected": true
+  },
+  "timestamp": "2023-06-01T12:34:56.789Z"
+}
+```
 
-## Alternative Deployment Options
+### Handling Warnings
 
-If Vercel continues to have issues with the build process, consider:
+Some warnings you might see during deployment are harmless:
 
-1. **Netlify**: Similar to Vercel but with different build processes
-2. **GitHub Pages**: For static frontend only
-3. **Render**: Can handle both frontend and backend
-4. **Railway**: Good for full-stack applications
+1. **Deprecated packages warnings**: Messages about `@esbuild-kit/esm-loader` and `@esbuild-kit/core-utils` being merged into tsx are informational only and don't affect functionality.
+
+2. **Duplicate key warnings**: These have been fixed by removing duplicate entries in package.json.
 
 ## Monitoring
 
