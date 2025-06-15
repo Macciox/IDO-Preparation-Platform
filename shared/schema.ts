@@ -101,6 +101,8 @@ export const idoMetrics = pgTable("ido_metrics", {
   minimumTierStatus: varchar("minimum_tier_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   gracePeriod: varchar("grace_period"),
   gracePeriodStatus: varchar("grace_period_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
+  tokenTicker: varchar("token_ticker"),
+  tokenTickerStatus: varchar("token_ticker_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   contractAddress: varchar("contract_address"),
   contractAddressStatus: varchar("contract_address_status", { enum: ["confirmed", "not_confirmed", "might_change"] }).default("not_confirmed"),
   

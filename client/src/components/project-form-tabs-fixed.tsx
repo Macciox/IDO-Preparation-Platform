@@ -713,6 +713,46 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                 <div className="flex space-x-3">
                   <FormField
                     control={form.control}
+                    name="tokenPriceEvent"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Token Price for Event</FormLabel>
+                        <FormControl>
+                          <Input placeholder="$0.08" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tokenPriceEventStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
                     name="vestingPeriod"
                     render={({ field }) => (
                       <FormItem className="flex-1">
@@ -727,6 +767,46 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                   <FormField
                     control={form.control}
                     name="vestingPeriodStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="vestingDuration"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Vesting Duration</FormLabel>
+                        <FormControl>
+                          <Input placeholder="24 months" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="vestingDurationStatus"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>
@@ -1250,6 +1330,46 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                 <div className="flex space-x-3">
                   <FormField
                     control={form.control}
+                    name="initialMarketCapExLiquidity"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Initial Market Cap (Ex. liquidity)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="$4,500,000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="initialMarketCapExLiquidityStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
                     name="initialMarketCap"
                     render={({ field }) => (
                       <FormItem className="flex-1">
@@ -1346,6 +1466,46 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
                   <FormField
                     control={form.control}
                     name="circulatingSupplyTgeStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {statusOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="circulatingSupplyTgePercent"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Circulating Supply TGE %</FormLabel>
+                        <FormControl>
+                          <Input placeholder="10%" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="circulatingSupplyTgePercentStatus"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>

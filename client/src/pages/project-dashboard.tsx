@@ -74,33 +74,40 @@ export default function ProjectDashboard() {
     let total = 0;
     let completed = 0;
 
-    // IDO Metrics Tab - 22 campi obbligatori (transactionId escluso)
+    // IDO Metrics Tab - 25 campi obbligatori (tutti i campi dalla lista specifica)
     const metrics = project.idoMetrics;
     if (metrics) {
       const fields = [
+        // Important Dates (4 fields)
         metrics.whitelistingDateStatus,
         metrics.placingIdoDateStatus,
         metrics.claimingDateStatus,
         metrics.initialDexListingDateStatus,
+        // Token Economics (8 fields)
         metrics.idoPriceStatus,
         metrics.tokensForSaleStatus,
         metrics.totalAllocationDollarsStatus,
+        metrics.tokenPriceEventStatus,
         metrics.tokenPriceStatus,
-        metrics.vestingPeriodStatus,
-        metrics.cliffPeriodStatus,
-        metrics.tgePercentageStatus,
         metrics.totalAllocationNativeTokenStatus,
         metrics.availableAtTgeStatus,
         metrics.cliffLockStatus,
+        metrics.vestingPeriodStatus,
+        metrics.vestingDurationStatus,
+        // Project Details (6 fields)
+        metrics.tokenTickerStatus,
         metrics.networkStatus,
-        metrics.minimumTierStatus,
         metrics.gracePeriodStatus,
+        metrics.minimumTierStatus,
+        metrics.transactionIdStatus, // Token Transfer TX-ID
         metrics.contractAddressStatus,
+        // Token Info (7 fields)
+        metrics.initialMarketCapExLiquidityStatus,
         metrics.initialMarketCapStatus,
         metrics.fullyDilutedMarketCapStatus,
         metrics.circulatingSupplyTgeStatus,
+        metrics.circulatingSupplyTgePercentStatus,
         metrics.totalSupplyStatus,
-        // transactionIdStatus escluso (opzionale)
       ];
       total += fields.length;
       completed += fields.filter(status => status === "confirmed").length;
