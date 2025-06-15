@@ -32,6 +32,13 @@
       line-height: 1.6;
       margin-bottom: 20px;
     }
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      margin-top: 20px;
+    }
     .button {
       display: inline-block;
       background-color: #4285f4;
@@ -40,10 +47,24 @@
       border-radius: 4px;
       text-decoration: none;
       font-weight: bold;
-      margin-top: 20px;
+      width: 200px;
+      text-align: center;
     }
     .button:hover {
       background-color: #3367d6;
+    }
+    .status {
+      margin-top: 30px;
+      padding: 15px;
+      border-radius: 4px;
+      background-color: #f8f9fa;
+      display: none;
+    }
+    .status pre {
+      text-align: left;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
   </style>
 </head>
@@ -51,8 +72,57 @@
   <div class="container">
     <h1>IDO Preparation Platform</h1>
     <p>Welcome to the IDO Preparation Platform. This platform helps you manage and prepare your IDO projects.</p>
-    <p>The application is currently being deployed. Please check back soon or contact support for assistance.</p>
-    <a href="/api/hello" class="button">Check API Status</a>
+    
+    <div class="button-container">
+      <a href="/api/hello" class="button" id="apiButton">Check API Status</a>
+      <a href="/api/db-status" class="button" id="dbButton">Check Database Status</a>
+      <a href="/api/init-db" class="button" id="initDbButton">Initialize Database</a>
+    </div>
+    
+    <div class="status" id="statusContainer">
+      <h3>Status Response:</h3>
+      <pre id="statusOutput">Checking status...</pre>
+    </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const apiButton = document.getElementById('apiButton');
+      const dbButton = document.getElementById('dbButton');
+      const initDbButton = document.getElementById('initDbButton');
+      const statusContainer = document.getElementById('statusContainer');
+      const statusOutput = document.getElementById('statusOutput');
+      
+      // Function to fetch and display status
+      async function checkStatus(endpoint) {
+        statusContainer.style.display = 'block';
+        statusOutput.textContent = 'Loading...';
+        
+        try {
+          const response = await fetch(endpoint);
+          const data = await response.json();
+          statusOutput.textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          statusOutput.textContent = `Error: ${error.message}`;
+        }
+      }
+      
+      // Add click event listeners
+      apiButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        checkStatus('/api/hello');
+      });
+      
+      dbButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        checkStatus('/api/db-status');
+      });
+      
+      initDbButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        checkStatus('/api/init-db');
+      });
+    });
+  </script>
 </body>
 </html>

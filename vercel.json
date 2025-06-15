@@ -6,17 +6,26 @@
       "use": "@vercel/node"
     },
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "src": "index.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/db-status",
+      "dest": "/api/db-status.js"
+    },
+    {
+      "src": "/api/init-db",
+      "dest": "/api/init-db.js"
+    },
+    {
+      "src": "/api/hello",
+      "dest": "/api/hello.js"
+    },
+    {
+      "src": "/api",
+      "dest": "/api/_app.js"
     },
     {
       "src": "/(.*)",
