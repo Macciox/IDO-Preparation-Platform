@@ -1305,8 +1305,8 @@ function IdoMetricsTab({ project }: { project: ProjectWithData }) {
           </div>
 
           <div className="flex justify-end space-x-4">
-            <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? "Saving..." : "Save IDO Metrics"}
+            <Button type="submit" disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? "Saving..." : "Save IDO Metrics"}
             </Button>
           </div>
         </form>
